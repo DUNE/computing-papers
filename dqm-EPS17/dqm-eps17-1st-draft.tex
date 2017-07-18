@@ -9,6 +9,14 @@
 \usepackage{xspace}
 \usepackage{amssymb}
 
+
+
+\usepackage{tabularx}
+\usepackage{url}
+
+
+
+
 \usepackage[firstpage]{draftwatermark}
 
 
@@ -31,14 +39,17 @@
 \begin{abstract}
 
 
-\noindent It is important to ensure 100\% readiness of the
-end-to-end \pd software and computing complex during the detector commissioning period and
-throughout data taking in 2018. We propose to conduct two Data Challenges in order to identify
-and address potential issues before they can impact the experiment.
-% The first Data Challenge is
-%meant to define and test various interfaces and modes of data transfer and processing, without
-%the software being finalized. The
-
+\noindent The Deep Underground Neutrino Experiment (DUNE) will employ a uniquely large multi-kiloton
+Liquid Argon Time Projection Chamber with separate modules utilizing
+single and dual-phase Liquid Argon technologies. An experimental 
+program (``protoDUNE'')  has been initiated which includes a beam and cosmic ray test of large-scale DUNE prototypes at CERN in 2018.
+The volume of data to be collected by the protoDUNE single-phase detector will amount to a few petabytes
+and the sustained rate of data sent to mass storage will be in the range of a few hundred megabyte per second.
+The protoDUNE experiment requires substantial Data Quality Monitoring capabilities in order to ascertain the
+condition of the detector and its various subsystems. To this end, a Prompt Processing system has been deveoped
+which is complementary to Online Monitoring and is characterized by a lower bandwidth, scalable CPU resources
+and end-to-end latency on the scale of a few minutes. We present the design of the ProtoDUNE Prompt Processing
+system, the current status of its development and testing and issues related to its interfaces and deployment.
 
 
 \end{abstract}
@@ -47,268 +58,214 @@ and address potential issues before they can impact the experiment.
 
 \pagebreak
 
-\section{About this document}
-%There are two main factors that make it necessary to ensure 100\% readiness of the
-%end-to-end \pd software and computing complex during the detector commissioning period and
-%throughout data taking in 2018. First, due to the short run schedule spending any significant amout
-%of time on debugging will make fulfillment of
-%the run plan impossible. Second, the Collaboration will need to process and analyze the NP04 data
-%on a reasonably short time scale (months rather than years) in order to maximize benefits of the
-%prototype effort for the DUNE R\&D work and CDR cycle, so efficient resource management and
-%throughput of \pd processing will be of essence right at the beginning of data taking. For these
-%reasons, and given the \pd schedule,  we propose to conduct two Data Challenges in order to identify
-%and address potential issues before they can impact the experiment.
+\section{Introduction}
+The \pd program aims to validate various aspects of the DUNE technology  before proceeding with
+the construction of the large-scale principal DUNE detectors at the Sanford Underground Research Facility \cite{cdrVol1, cdrVol4}.
+The program is designed to make a series of measurements on the
+interaction of charged particles in the Liquid Argon medium.  These
+measures will be performed in a test beam provided by a new dedicated
+target station and beamline transport system at the CERN SPS
+accelerator complex.  This ``neutrino platform'' facility has the
+potential to be an important resource for the characterization of the DUNE/protoDUNE
+Liquid Argon Time Projection Chamber (LArTPC) detectors and for
+providing realistic electromagnetic and hadronic shower response
+functions for different particles interacting in these detectors. 
+The experimental program includes two separate
+large LArTPC prototypes, one based on a ``single-phase'' (liquid) technology and
+one based on a ``dual-phase'' (liquid/gaseous) TPC readout technology,
+with CERN experiment designations \textbf{NP04} and \textbf{NP02}
+respectively.  Both detectors are scheduled to be deployed at CERN in
+2017, with beam data taking in 2018.
 
-The goal of this document is to provide concise information about the proposed \pd Data Challenges
-to the individual working groups in order to coordinate effort and come to a consensus as to the scope,
-plans and schedule of the proposed Data Challenges. \textit{It does not contain detailed descriptions
-and/or designs of the \pd computing
-infrastructure elements} and the reader is reffered to existing documentation where
-needed, with references provided in the text.
+The two detector apparatuses, when deployed, will share parts of their
+computing infrastructure.  Their data acquisition (DAQ) systems and
+corresponding data buffers will operate in an independent manner. 
+The focus of this paper is on the data management for the
+single-phase LArTPC (NP04).
+%\,\cite{np04}.
+This detector  functions without amplification
+in the Liquid Argon medium and is in essence a large single volume
+ionization/drift chamber.  The drift volume is equipped with
+a large number of readout electrodes (wires), each with its own electronics chain.
+In this ``cold electronics design'' employed by \textbf{NP04},  the front-end electronics is situated within the cryostat and operates at cryogenic
+temperatures in order to minimize noise.
 
-\section{The Scope of the Data Challenges}
-Information regarding the \pd (NP04) computing is summarized in the \pd-SP Technical Design Report\cite{docdb1794}.
-The following components (including infrastructure, middleware and software) can be identified as relevant in the context
-of Data Challenges (which will be also referred to as \textit{``DC''} in this document):
-\begin{itemize}
-\item The DAQ \textbf{Online Buffer} which stores raw data assembled by the Event Builders, as files on disk. The internals
-of the DAQ system itself are not within the scope.
+Both NP02 and NP04 detectors will be placed in an extension of the CERN North Area Experimental Hall.
+The general layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}.
+Within these areas there will be enclosures with sufficient power and cooling capacity to house
+the elements of the \pd DAQ readout and computing infrastructure which
+needs to be in close proximity to the physical detectors.
+These enclosures are shown schematically as yellow blocks in the
+upper-right portion of Fig.\,\ref{fig:np02np04}. From these counting
+houses, each prototype detector will be have a dedicated 20 Gb/s
+network connection over optical fiber to the CERN central storage
+facilities located in the West Area campus of CERN.  
 
-\item  \textbf{Beam Instrumentation Interface}. Most of the Beam Instrumentation data is not included into the data stream
-handled by the \pd DAQ (whose primary task is to capture data from the TPC and the Photon Detector), and is instead
-transmitted to the Beam Instrumentation Database at CERN. It is not available immediately for each triggered event,
-and is instead available in batches after each spill cycle of the SPS. Interfacing this system is a task that needs
-to be addressed for \pd to be able to include these data in its offline processing in an optimal manner.
-%validate its beam trigger system.
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[tb]
+\centering\includegraphics[width=0.8\textwidth]{np02np04.png}
+\caption{\label{fig:np02np04}Diagram of the layout of the CERN north area with
+  staging of the protoDUNE dual phase detector (center) and single
+  phase detector (right).}
+\end{figure}
+%%%%%%%%%%%%%%%%%%%%%%%%
 
-\item The \textbf{Raw Data Management System}\cite{docdb1212}  which performs data transfers between a few endpoints
-at CERN and FNAL starting with the Online Buffer and which is also tasked with proper accounting and handling of Metadata
-by interacting with the SAM system at FNAL (see next item). The Data Handling System will inteface the disk-based mass storage
-at CERN and FNAL (i.e.\,EOS\cite{eos} and dCache) as well as tape systems (CASTOR and Enstore respectively).
-We anticipate using the \textit{Fermi File Transfer System} (also abbreviated as F-FTS\cite{fts}) for most of this functionality.
+\section{LArTPC as a Data Source}
+\label{sec:np04_data_rate}
+DUNE/\pd LArTPC design has a fine spatial resolution due to the high
+channel count and spatial granularity, wire pitch and geometry, of the readout
+planes.  The readout design also takes advantage the relatively slow
+drift velocity of ions in the Argon and the 2\,MHz digitization clock
+to achieve similarly fine spatial and temporal resolution along the
+drift axis of the detector. The readout window is  set to 5\,ms 
+which is driven by the electron drift time across
+the active volume (which is slightly less).  These characteristics are typical of
+similar modern TPC detectors.
 
-\item The \textbf{Metadata}  -- SAM system at FNAL which comprises the functionality of the file catalog, data storage and
-retrieval based on Metadata and can also be used for orchestration of production workflows.
+In the absence of zero suppression these factors do however
+result in a large data volume that needs to be read out and
+processed for a single readout.
+%single considerable amount of data collected per single event readout (trigger).
+A DUNE/\pd readout event may be compared to sequential stack of a thousand of digital
+images of the signals collected from the electrodes. 
+The instantaneous triggered data rate and the data rates averaged over
+the beam's spill and duty factors are expected to be primarily limited
+by the network bandwidth available within the DAQ infrastructure and
+the I/O bandwidth available for recording the data.  Lossless data
+reduction/compression (e.g. Huffman encoding)
+techniques are applied to the data within the DAQ readout chain and
+are projected to result in a factor of 4x reduction to the raw data.
+Based on these projections, the NP04 experiment is expected to accumulate 2.5~PB of physics beam
+data during 3 months of running.  The total data volume accumulated by
+the experiment is expected to be larger when data from
+detector commissioning prior to the beam run, and cosmic ray data from
+after the beam running are included.   These rates are detailed in Table.\,\ref{table:np04_data_rate}.
 
-\item \textbf{Data Quality Monitoring} (DQM) which is tasked with running algorithms with turnaround time short enough to provide
-actionable results (under and hour) but which won't fit into the computational footprint of the Online Monitoring (a part of DAQ).
-To support DQM, the ProtoDUNE Prompt Processing System (\textbf{p3s}) \cite{docdb1811,p3s} has been created and will run any type of\
-DQM workload as formulated and programmed by the working groups.
+% \section{The NP04 Data Characteristics}
+% \label{sec:np04_data_rate}
+% The following nominal parameters define the expected data rates and volume in NP04:
+% \begin{itemize}
+% \item TPC channel count: 15,360
+% \item Digitization frequency: 2MHz
+% \item Readout window: 5\,ms
+% \item Trigger rate: 100\,Hz
+% \item SPS spill time: 4.8\,s
+% \item SPS cycle: 16.8\,s
+% \item Compression: $\times$4
+% \end{itemize}
+% \noindent This results in the following nominal data characteristics:
+% \begin{itemize}
+% \item Instantaneous rate (in DAQ): 11.5\,GB/s
+% \item Average rate (including ingestion into mass storage): 3.3\,GB/s
+% \item Total data to be captured: 6\,PB
+% \item Buffer to store 3 days worth of data: 850\,TB
+% \end{itemize}
 
-\item \textbf{Calibration and Production Software}. While it is not expected that these components will be finalized
-(and some even exist) at the time of the first Data Challenge it is important to have a firm grasp of the required interfaces,
-data flow patterns and other crucial aspects of the \pd Production Systems. Having prototypes in place is therefore crucial
-on the time scale of the Data Challenges.
-An important component of the overall production chain is the \textit{Data Reduction} step along the lines described
-in \cite{docdb2089}. It combines a few signal-processing procedures (cf. digital filtering and noise reduction), and it will be
-necessary in any version or architecture of the production software.
-Understanding the interfaces and practical implications of this component would be a useful part of the Data Challenge.
-
-\item \textbf{Analysis Suite Prototypes}. Same comment applies here as to the previous item, i.e.\,while there is no expectation
-for the final design and implementation of the analysis chain to exist early in the experiment (especially that it is by nature the most
-dynamic and fluid part of all software) it is important to put in place, document and optimize its interfaces with various components
-of infrastructure e.g.\,calibration databases, Metadata, software and data provenance controls etc.
-
-\item \textbf{Production Operations Management Service (POMS)}. This FNAL-based service \cite{poms} manages and automates jobs
-submission on distributed resources on the Grid. It will be the primary platform for \pd on which to run production and analysis.
-
-
-\end{itemize}
-\noindent Relationship between the various infrastructure and other components listed above is schematically illustrated in
-Fig.\ref{fig:dc1}. This diagram relflects the fact that transmission of \pd data is a multistage process and in particular there
-will be separate instances of F-FTS transferring the data from the Online Buffer to mass storage at CERN, and then from
-CERN to FNAL and elsewhere.
-
-%\begin{figure}[tbh]
-%  \centering
-%  \includegraphics[width=1.0\textwidth]{figures/data_challenge_1.pdf}
-%  \caption{Schematics of data flow and  processing in \pd data challenges.}
-%  \label{fig:dc1}
-%\end{figure}
-%\noindent Data and production streams which belong to \pd Monte Carlo simulation domain are not included in the scope of Data Challenges presented here.
-
-\section{Plans for Data Challenges}
-\subsection{Work-up to the Data Challenges}
-Before any end-to-end data challenge can be meaningul, all individual components and interfaces must undergo
-their own functional testing. The following non-inclusive list illustrates the scope of the pre-DC activity:
-\begin{itemize}
-
-\item \textbf{Data Transfer and SAM interaction}.  Both F-FTS1 and F-FTS2 components as schematically depicted in Fig.\,\ref{fig:dc1}
-must undergo end-to-end functional testing including registration in SAM and sinking data to tape storage both at CERN and FNAL. A test
-agent will be created which simulates creation of the raw data files by DAQ, which are written to the Online Buffer and picked up
-by the F-FTS for transmission.
-
-\item \textbf{Beam Instrumentation Interface}. At a minimum, prototype schemas for \pd beam detectors must be created in
-the CERN Beam Instrumentation Database, and populated with dummy data. An extraction process must be put in place which
-``captures'' these data and commits it either to a database managed by \pd and/or as files on disk (EOS). A prototype
-of the merging process must be put in place. This will also require data access libraries to be utilized in the production process.
-
-\item  \textbf{DQM/p3s}. The prompt processing system must be tested and validated to run with the primary data
-staging area being in EOS. The issues of deployment, updating and maintenance of LArSoft and other requisite software
-must be resolved.
-
-\item  \textbf{Data Reduction Software}.
-% In one shape or another, data reduction will form a distinct stage in the production chain  in \pd.
-A prototype of this software module must be tested with simulated data and packaged in a way that is portable across
-FNAL and facilities at CERN.
-
-\item  \textbf{Calibration and Production Software}. Prototypes of this software need to be put in place. They will
-include components specific to LArTPC, the Photon Detector and the Beam Instrumentation data, which will also require
-merging and processing.
-
-\item  \textbf{Production Management and Support}. This includes running prototypes of this software utilizing the FNAL POMS.
-
-\item  \textbf{Analysis}. The main point in this exercise to to ready the interface of the analysis software to SAM and other
-components of the production system(s). There are no strict requirements to functionality and performance of the analysis
-software at this stage.
-
-\end{itemize}
-\noindent The work-up period must be completed no later than September 2017. It is expected that Data Reduction, Production, DQM
-and othe components will have substantial overlaps and/or commonalities, which must be exploited from the point of view of software
-sharing and reuse. One of the goals of the work-up period is to identify such items.
-
-\subsection{Timeline, Reporting and Documentation}
-Because of the significant CERN involvement in \pd computing, and to facilitate communication with the CERN IT management
-it appears optimal to document the working plans and progress of Data Challenges on the CERN TWiki pages provided by
-CENF. More detailed technical documentation regarding components and systems will be managed on DUNE DocDB as before.
-
-The work-up as described above should be completed by September 2017, and reports for each component provided
-to the \pd leadership and the \pd-CERN computing liaison representative. DC1 will take place in October 2017.
-DC2 will be conducted in February 2018. Each Data Challenge will result in a concise report which will be made available
-to the Collaboration and follow-up shall be organized as needed.
-
-\subsection{DC1 Scenario}
-
-\begin{itemize}
-
-\item Simulated raw data is deposited into the Online Bufer by a specially created test agent.
-
-\item The data is detected by F-FTS1 and transmitted to EOS.
-
-\item F-FTS2 initiates data transfer to dCache at FNAL. Contact is made with the Metadata system (SAM) where the files
-are registered.
-
-\item Beam Instrumentation data is captured by \pd systems and is stored either on a DB server or as files on EOS.
-These data do not need to be real at this point, as the purpose of this step is to test interfaces and protocols.
-
-\item Automated process initiates DQM streams in p3s. In DC1, full-blown processing on CERN Tier-0\,\cite{lxbatch}
-will not be required and at a minimum the operation of p3s will be validated on the Neutrino Platform cluster\,\cite{neut}.
-
-\item Production team at FNAL submits production jobs using the newly arrived data as input. This includes prototype interfaces
-to software components of the LArTPC, Photon Detector and Beam Instrumentation systems.
-
-\end{itemize}
+\begin{table}
+\begin{center}
+\caption[GPS Detector Locations]{\label{table:np04_data_rate}
+  Detector, beam, DAQ and data rate parameters for the single phase
+  \pd experiment (NP04).}
+\ \\
+\begin{tabularx}{0.75\textwidth}{ X  >{\setlength{\hsize}{0.8\hsize}}r}
+\hline
+Detector Parameter & Target \\
+\hline
+TPC channel count & 15,360 \\
+Digitization frequency & 2\,MHz \\
+Readout window & 5\,ms \\
+SPS spill time& 4.8\,s\\
+SPS cycle& 22.5\,s\\
+Trigger rate (target minimum/maximum) & 25--100\,Hz \\
+Single readout size (per trigger) & 230.4\,MB \\
+Target compression factor& $\times$4 \\
+Instantaneous data rate (in-spill) & 1440\,MB/s \\
+Average data rate & 576\,MB/s \\
+Total data recorded (beam + cosmic) & 2.5\,PB\\
+Buffer to store 3 days worth of data & 300\,TB\\
+\hline
+\end{tabularx}
+\end{center}
+\end{table}
 
 
-\subsection{DC2 Scenario}
-
-\begin{itemize}
-
-\item DAQ sends raw data (such as pulser or simulated trigger data) to the Online Bufer.
-
-\item The data is detected by F-FTS1 and transmitted to EOS.
-
-\item F-FTS2 initiates data transfer to dCache at FNAL. Contact is made with the Metadata system (SAM) where the files
-are registered.
-
-\item Realistic Beam Instrumentation data is captured by \pd systems and is stored either on a DB server or as files on EOS.
-
-\item Automated process initiates DQM streams in p3s using  CERN Tier-0. At a minimum, ADC and noise spectra (FFT) are produced
-and delivered to the user by a Web service.
-
-\item Production team at FNAL submits production jobs using the newly arrived data as input. Interfaces between software components,
-data etc as well as actual functionaltiy are close to final.
-
-\item Analysis chain is activated.
-
-\end{itemize}
 
 
-\section{Personnel and Responsibilities}
-
-\begin{itemize}
-
-\item Online Buffer and the test agent -- DAQ team
-
-\item Beam Instrumentation Interface -- Beam Instrumentation Group, DB coordinator: J.Paley
-
-\item F-FTS -- FNAL team (lead: A.Norman)
-
-\item p3s -- prompt processing team (lead: M.Potekhin)
-
-\item DQM and production payloads -- DRA team (co-leads: D.Stefan, R.Sulej)
-
-\item Calibrations -- M.Mooney
-
-\item Integration consultant -- B.Viren
-
-\item Metadata and SAM -- FNAL SCD (T.Junk, S.Fuess)
-
-
-\item Production support at CERN and FNAL -- TBD
-
-\item Analysis -- TBD
-
-\item Coordination -- R.Pordes
-
-
-\end{itemize}
 
 \clearpage
-\begin{thebibliography}{1}
 
-\bibitem{docdb1794}
-{DUNE DocDB 1794: \textit{ProtoDUNE-SP Technical Design Report }}\\
-\url{http://docs.dunescience.org:8080/cgi-bin/ShowDocument?docid=1794}
+\section*{References}
+\begin{thebibliography}{9}
+
+\bibitem{cdrVol1}
+R Acciarri et al.
+``Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report Volume 1: The LBNF and DUNE Projects''.\\ e-Print: arXiv:\textbf{1601.05471}
+ %DUNE CDR Vol 1 -- The LBNF and DUNE Projects.~e-Print: arXiv:1601.05471
+%\url{http://arxiv.org/abs/1601.05471}
+
+\bibitem{cdrVol4}
+R Acciarri et al.
+``Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report, Volume 4 The DUNE Detectors at LBNF''.\\~e-Print: arXiv:\textbf{1601.02984}
+%\url{http://arxiv.org/abs/1601.02984}
+
+%\bibitem{np04} 
+% Yearly report on ProtoDUNE Single Phase NP04 (2016), \textit{CERN-SPSC-2016-018}
+%\url{https://cds.cern.ch/record/2144868}
+
+\bibitem{xrootd}
+L Bauerdick et al. ``Using Xrootd to Federate Regional Storage.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
+%{XRootD software framework:}~\url{http://www.xrootd.org}
+
+%\bibitem{cenf}
+%{CERN Neutrino Platform}\\
+%\url{http://home.cern/about/experiments/cern-neutrino-platform}
 
 
+\bibitem{castoreos}
+ L Mascetti et al. ``Disk storage at CERN.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015.
+%{CASTOR -- CERN Advanced STORage manager}:~
+%\url{http://castor.web.cern.ch/}
 
-\bibitem{docdb1212}
-{DUNE DocDB 1212: \textit{Design of the Data Management System for the protoDUNE Experiment}}\\
-\url{http://docs.dunescience.org:8080/cgi-bin/ShowDocument?docid=1212}
+%\bibitem{eos}
+%{The CERN Exabyte Scale Storage}\\
+%\url{http://information-technology.web.cern.ch/services/eos-service}
 
-\bibitem{eos}
-{The CERN Exabyte Scale Storage}\\
-\url{http://information-technology.web.cern.ch/services/eos-service}
 
+\bibitem{sam}
+R A Illingworth ``A data handling system for modern and future Fermilab experiments.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014.
+
+%{A data handling system for modern and future Fermilab experiments}\\
+%\url{http://iopscience.iop.org/1742-6596/513/3/032045}
 
 \bibitem{fts}
-{The Fermilab File Transfer System}\\
-\url{http://cd-docdb.fnal.gov/cgi-bin/RetrieveFile?docid=5412&filename=datamanagement-changeprocedures.pdf&version=1}
+Norman A 2014 \textit{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
+%%\url{http://cd-docdb.fnal.gov/cgi-%bin/RetrieveFile?docid=5412&filename=datamanagement-
+%%changeprocedures.pdf&version=1}
+
+\bibitem{nova}
+R Plunkett et al.  ``Status of the NOvA Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{120}. IOP Publishing, 2008.
 
 
-\bibitem{docdb1811}
-{DUNE DocDB 1811: \textit{Prompt Processing System Requirements for the Single-Phase protoDUNE}}\\
-\url{http://docs.dunescience.org:8080/cgi-bin/ShowDocument?docid=1811}
+% NOvA Neutrino Experiment:~
+% \url{https://www-nova.fnal.gov/}
 
-\bibitem{p3s}
-{A Design of the Prompt Processing System for the Single-Phase protoDUNE experiment (NP04 )}\\
-\url{http://docs.dunescience.org:8080/cgi-bin/ShowDocument?docid=1861}
+\bibitem{uboone}
+B Jones et al.  ``The Status of the MicroBooNE Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013.
 
-\bibitem{docdb2089}
-{Proposed Initial Data Reduction for protoDUNE/SP}\\
-\url{http://cd-docdb.fnal.gov/cgi-bin/RetrieveFile?docid=2089&filename=datamanagement-changeprocedures.pdf&version=1}
+%The MicroBooNE Experiment:~
+% \url{http://www-microboone.fnal.gov/}
 
+\bibitem{dcache}
+A Millar et al.  ``dCache, agile adoption of storage technology.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
+% {dCache, a distributed storage solution:}~
+% \url{https://www.dcache.org/}
 
-\bibitem{poms}
-{Production Operations Management Service (POMS)}\\
-\url{https://cdcvs.fnal.gov/redmine/projects/prod_mgmt_db}
-
-
-\bibitem{lxbatch}
-{The CERN batch computing service}\\
-\url{http://information-technology.web.cern.ch/services/batch}
-
-
-
-\bibitem{neut}
-{Neutrino Computing Cluster at CERN}\\
-\url{https://twiki.cern.ch/twiki/bin/view/CENF/NeutrinoClusterCERN}
-
-
-
+%\bibitem{larsoft}
+%{LArSoft Collaboration}:~
+%\url{http://larsoft.org//}
 
 \end{thebibliography}
+
 
 
 \end{document}
