@@ -30,7 +30,7 @@
 \author{M.Potekhin for the DUNE Collaboration}
 
 \begin{document}
-\SetWatermarkText{1st DRAFT}
+\SetWatermarkText{DRAFT}
 \SetWatermarkLightness{0.9}
 \SetWatermarkScale{3}
 
@@ -54,52 +54,30 @@ system, the current status of its development and testing and issues related to 
 
 \end{abstract}
 
-\tableofcontents
-
-\pagebreak
+% \tableofcontents
+% \pagebreak
 
 \section{Introduction}
 The \pd program aims to validate various aspects of the DUNE technology  before proceeding with
 the construction of the large-scale principal DUNE detectors at the Sanford Underground Research Facility \cite{cdrVol1, cdrVol4}.
-The program is designed to make a series of measurements on the
-interaction of charged particles in the Liquid Argon medium.  These
-measures will be performed in a test beam provided by a new dedicated
-target station and beamline transport system at the CERN SPS
-accelerator complex.  This ``neutrino platform'' facility has the
-potential to be an important resource for the characterization of the DUNE/protoDUNE
-Liquid Argon Time Projection Chamber (LArTPC) detectors and for
-providing realistic electromagnetic and hadronic shower response
-functions for different particles interacting in these detectors. 
-The experimental program includes two separate
+It  is designed to make a series of measurements of the interactions of charged particles in the Liquid Argon medium.  These
+measurements will be performed with a dedicated test beam  at the CERN SPS accelerator complex and will also include
+a large number of cosmic ray triggers. The program includes two separate
 large LArTPC prototypes, one based on a ``single-phase'' (liquid) technology and
-one based on a ``dual-phase'' (liquid/gaseous) TPC readout technology,
-with CERN experiment designations \textbf{NP04} and \textbf{NP02}
-respectively.  Both detectors are scheduled to be deployed at CERN in
-2017, with beam data taking in 2018.
-
-The two detector apparatuses, when deployed, will share parts of their
-computing infrastructure.  Their data acquisition (DAQ) systems and
-corresponding data buffers will operate in an independent manner. 
-The focus of this paper is on the data management for the
-single-phase LArTPC (NP04).
-%\,\cite{np04}.
-This detector  functions without amplification
-in the Liquid Argon medium and is in essence a large single volume
-ionization/drift chamber.  The drift volume is equipped with
-a large number of readout electrodes (wires), each with its own electronics chain.
-In this ``cold electronics design'' employed by \textbf{NP04},  the front-end electronics is situated within the cryostat and operates at cryogenic
-temperatures in order to minimize noise.
-
-Both NP02 and NP04 detectors will be placed in an extension of the CERN North Area Experimental Hall.
+one based on a ``dual-phase'' (liquid/gaseous) TPC readout technology.
+Both detectors will be placed in an extension of the CERN North Area Experimental Hall.
 The general layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}.
-Within these areas there will be enclosures with sufficient power and cooling capacity to house
-the elements of the \pd DAQ readout and computing infrastructure which
-needs to be in close proximity to the physical detectors.
+Located in this  area will be enclosures which will house
+the elements of the local computing infrastructure (including Data Acquisition).
 These enclosures are shown schematically as yellow blocks in the
-upper-right portion of Fig.\,\ref{fig:np02np04}. From these counting
-houses, each prototype detector will be have a dedicated 20 Gb/s
+upper-right portion of Fig.\,\ref{fig:np02np04}, and they will have
+a dedicated 20 Gb/s
 network connection over optical fiber to the CERN central storage
 facilities located in the West Area campus of CERN.  
+
+In the following we shall focus on the Single-Phase prototype which will be referred to as ``protoDUNE-SP''.
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[tb]
