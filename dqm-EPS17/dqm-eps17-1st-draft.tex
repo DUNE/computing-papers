@@ -44,11 +44,11 @@ Liquid Argon Time Projection Chamber with separate modules utilizing
 single and dual-phase Liquid Argon technologies. An experimental 
 program (``protoDUNE'')  has been initiated which includes a beam and cosmic ray test of large-scale DUNE prototypes at CERN in 2018.
 The volume of data to be collected by the protoDUNE single-phase detector will amount to a few petabytes
-and the sustained rate of data sent to mass storage will be in the range of a few hundred megabyte per second.
+and the sustained rate of data sent to mass storage will be in the range of a few hundred megabytes per second.
 The protoDUNE experiment requires substantial Data Quality Monitoring capabilities in order to ascertain the
 condition of the detector and its various subsystems. To this end, a Prompt Processing system has been deveoped
 which is complementary to Online Monitoring and is characterized by a lower bandwidth, scalable CPU resources
-and end-to-end latency on the scale of a few minutes. We present the design of the ProtoDUNE Prompt Processing
+and end-to-end latency on the scale of a few minutes. We present the design of the protoDUNE Prompt Processing
 system, the current status of its development and testing and issues related to its interfaces and deployment.
 
 
@@ -57,7 +57,7 @@ system, the current status of its development and testing and issues related to 
 % \tableofcontents
 % \pagebreak
 
-\section{Overview of the protoDUNE program}
+\section{Overview of the protoDUNE-SP}
 The \pd program aims to validate various aspects of the DUNE  Liqiud Argon Time Projection Chamber (LArTPC)  technology 
 before proceeding with the construction of the large-scale principal DUNE detectors at the Sanford Underground Research
 Facility \cite{cdrVol1, cdrVol4}. It  is designed to make a series of measurements of the interactions of
@@ -75,10 +75,35 @@ network connection over optical fiber to the CERN central storage facilities.
 % located in the West Area campus of CERN.  
 
 In the following we shall focus on the single-phase prototype which will be referred to as ``protoDUNE-SP''.
+It has also received the official CERN designation as the CERN experiment NP04.
 This device is essentially an ionization chamber in which Liquid Argon serves both as the target and
 the sensitive medium with which to detect and measure ionization, with subsequent full 3D resonstruction of
 events of interest. To this end, it is instrumented with a large number
-of wire sensors grouped into planar assemblies (termed Anode Plane Assemblies, or APAs).
+of wire sensors grouped into planar arrays (termed Anode Plane Assemblies, or APAs). Each APA contains
+two induction planes and one collection plane, in a stereo angle configuration.
+
+The protoDUNE-SP LArTPC will contain six APAs of the same design as in the DUNE
+experiment, and of identical size which is 6$\times$2.4\,m. Drift distance is 3.6\,m
+and the drift field 500\,V/cm. The fiducial volume of Liquid Argon in the detector
+is approximately 7.2$\times$7.2$\times$6.0\,m$^3$. The cryostat is shaped as a cube
+with $\sim$11\,m side (external dimensions).
+
+The detector features the ``cold electronics'' design
+in which the amplifiers and digitizers are placed within the cryostat and operate at
+cryogenic temperatures. Digital signals are fed to the Warm Interface Boards located
+outside of the cryostat and transmitted to the Data Acquisition System via a fiber
+optic line.
+
+An important part of the DUNE design is the Photon Detector capable of providing an accurate measurement
+of the event timing. It is included in protoDUNE-SP and components of this detector are integrated
+into the APAs.
+
+In order to implement the Cosmic Ray Trigger an external system of scintillation counters is installed
+outside of the cryostat. The signals from the counters are used in the trigger logic and are also
+read out and also included in the overall data stream created by the DAQ.
+
+The beamline used in the experiment is instrumented with fiber tracking devices, Time-of-Flight and Cherenkov counters.
+% These detectors are read out separately and their respective data is transmitted to the
 
 
 
@@ -123,9 +148,9 @@ Buffer to store 3 days worth of data & 300\,TB\\
 \end{table}
 
 The DUNE/\pd single-phase LArTPC design has a fine spatial resolution (with wire pitch of $\sim$\,5\,mm)
-and thus high channel count. The 2\,MHz digitization provides similarly fine spatial and
+and thus a relatively high channel count. The 2\,MHz digitization provides similarly fine spatial and
 temporal resolution along the drift axis of the detector. The readout window is  set to 5\,ms 
-based on the scale of electron drift time across the active volume.  These characteristics are typical of
+based on the nominal scale of electron drift time across the active volume (2.2\,ms).  These characteristics are typical of
 similar modern TPC detectors. The principal parameters which define the expected data rate and
 volume in protoDUNE-SP are presented  in Table.\,\ref{table:np04_data_rate}. In summary, combination
 of the high channel count (dictated by high granularity and the volume of the detector), digitization frequency
@@ -143,7 +168,8 @@ protoDUNE-SP will use a prompt processing system to support Data Quality Monitor
 a few types of calculations, such as
 \begin{itemize}
 \item Signal Processing and basic Visualization
-]item Liquid Argon purity monitoring
+\item Liquid Argon purity monitoring
+\item Beam Instrumentation processing and track matching
 \end{itemize}
 
 \section{Prompt Processing System}
