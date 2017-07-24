@@ -14,7 +14,7 @@
 
 \ShortTitle{The \pd-SP experiment and its prompt processing system}
 
-\author{\speaker{Maxim Potekhin}\thanks{A footnote may follow.}\\
+\author{\speaker{Maxim Potekhin}\thanks{For the Deep Underground Neutrino Experiment Collaboration.}\\
         Brookhaven National Laboratory, USA\\
         E-mail: \email{potekhin@bnl.gov}}
 
@@ -22,8 +22,20 @@
 %        Affiliation\\
 %        E-mail: \email{...}}
 
-\abstract{..........................\
-          ...........................}
+\abstract{
+\noindent The Deep Underground Neutrino Experiment (DUNE) will employ a uniquely large multi-kiloton
+Liquid Argon Time Projection Chamber with separate modules utilizing
+single and dual-phase Liquid Argon technologies. An experimental 
+program (``protoDUNE'')  has been initiated which includes a beam and cosmic ray test of large-scale DUNE prototypes at CERN in 2018.
+The volume of data to be collected by the protoDUNE single-phase detector will amount to a few petabytes
+and the sustained rate of data sent to mass storage will be in the range of a few hundred megabytes per second.
+The protoDUNE experiment requires substantial Data Quality Monitoring capabilities in order to ascertain the
+condition of the detector and its various subsystems. To this end, a Prompt Processing system has been deveoped
+which is complementary to Online Monitoring and is characterized by a lower bandwidth, scalable CPU resources
+and end-to-end latency on the scale of a few minutes. We present the design of the protoDUNE Prompt Processing
+system, the current status of its development and testing and issues related to its interfaces and deployment.
+
+}
 
 \FullConference{EPS-HEP 2017, European Physical Society conference on High Energy Physics\\
 		5-12 July 2017\\
@@ -31,7 +43,7 @@
 
 \begin{document}
 
-\section{Overview of the protoDUNE-SP}
+\section{Overview of the protoDUNE-SP experiment}
 The \pd program aims to validate various aspects of the DUNE  Liqiud Argon Time Projection Chamber (LArTPC)  technology 
 before proceeding with the construction of the large-scale principal DUNE detectors at the Sanford Underground Research
 Facility \cite{cdrVol1, cdrVol4}. It  is designed to make a series of measurements of the interactions of
@@ -40,28 +52,36 @@ beam  at the CERN SPS accelerator complex and will also include
 a large number of cosmic ray triggers. The program includes two separate
 large LArTPC prototypes, one based on a ``single-phase'' (liquid) technology and
 the other based on a ``dual-phase'' (liquid/gaseous) TPC readout technology.
-Both detectors will be placed in an extension of the CERN North Area Experimental Hall.
-The general layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}.
-Located in this  area will be enclosures which will house the elements of the local computing infrastructure
+Both detectors are placed in an extension of the CERN North Area Experimental Hall and  scheduled
+to take data in 2018. The general layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}, with
+the single-phase detector seen as a cubic structure on the right.
+
+Located in the vicinity of the detectors will be enclosures which will house the elements of the local computing infrastructure
 (including Data Acquisition, Online Buffer etc). These enclosures are shown schematically as yellow blocks in the
 upper-right portion of Fig.\,\ref{fig:np02np04}, and they will have a dedicated 20 Gb/s
 network connection over optical fiber to the CERN central storage facilities.
-% located in the West Area campus of CERN.  
+
+%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{figure}[tb]
+\centering\includegraphics[width=1.0\textwidth]{np02np04.png}
+\caption{\label{fig:np02np04}Diagram of the layout of the CERN north area with
+  location of the protoDUNE dual phase detector (center) and the single
+  phase detector (right). The direction of the particle beam is from left to right.}
+\end{figure}
+
 
 In the following we shall focus on the single-phase prototype which will be referred to as ``protoDUNE-SP''.
 It has also received the official CERN designation as the CERN experiment NP04.
 This device is essentially an ionization chamber in which Liquid Argon serves both as the target and
 the sensitive medium with which to detect and measure ionization, with subsequent full 3D resonstruction of
 events of interest. To this end, it is instrumented with a large number
-of wire sensors grouped into planar arrays (termed Anode Plane Assemblies, or APAs). Each APA contains
+of wire sensors immersed in Liquid Argon and grouped into planar arrays (termed Anode Plane Assemblies, or APAs). Each APA contains
 two induction planes and one collection plane, in a stereo angle configuration.
-
 The protoDUNE-SP LArTPC will contain six APAs of the same design as in the DUNE
-experiment, and of identical size which is 6$\times$2.4\,m. Drift distance is 3.6\,m
+experiment, and of the same size which is 6$\times$2.4\,m. Drift distance is 3.6\,m
 and the drift field 500\,V/cm. The fiducial volume of Liquid Argon in the detector
 is approximately 7.2$\times$7.2$\times$6.0\,m$^3$. The cryostat is shaped as a cube
 with $\sim$11\,m side (external dimensions).
-
 The detector features the ``cold electronics'' design
 in which the amplifiers and digitizers are placed within the cryostat and operate at
 cryogenic temperatures. Digital signals are fed to the Warm Interface Boards located
@@ -81,20 +101,10 @@ The beamline used in the experiment is instrumented with fiber tracking devices,
 
 
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[tb]
-\centering\includegraphics[width=1.0\textwidth]{np02np04.png}
-\caption{\label{fig:np02np04}Diagram of the layout of the CERN north area with
-  staging of the protoDUNE dual phase detector (center) and single
-  phase detector (right).}
-\end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Raw Data Parameters in protoDUNE-SP}
 \label{sec:np04_data_rate}
-
-
 \begin{table}
 \begin{center}
 \caption{\label{table:np04_data_rate}
@@ -106,6 +116,7 @@ Detector Parameter & Target \\
 \hline
 TPC channel count & 15,360 \\
 Digitization frequency & 2\,MHz \\
+Nominal electron drift time & 2.2\,ms\\
 Readout window & 5\,ms \\
 SPS spill time& 4.8\,s\\
 SPS cycle& 22.5\,s\\
@@ -124,24 +135,42 @@ Buffer to store 3 days worth of data & 300\,TB\\
 The DUNE/\pd single-phase LArTPC design has a fine spatial resolution (with wire pitch of $\sim$\,5mm)
 and thus a relatively high channel count. The 2\,MHz digitization provides similarly fine spatial and
 temporal resolution along the drift axis of the detector. The readout window is  set to 5\,ms 
-based on the nominal scale of electron drift time across the active volume (2.2\,ms).  These characteristics are typical of
-similar modern TPC detectors. The principal parameters which define the expected data rate and
-volume in protoDUNE-SP are presented  in Table.\,\ref{table:np04_data_rate}. In summary, combination
-of the high channel count (dictated by high granularity and the volume of the detector), digitization frequency
-and the relatively long readout window (due to the electron drift time) lead to a substantial data rate and volume.
+based on the nominal scale of electron drift time across the active volume (2.2\,ms) to allow for detection
+of ionization immediately before and after the event of interest.  These characteristics are typical of
+similar modern Liquid Argon TPC detectors. The principal parameters which define the expected data rate and
+volume in protoDUNE-SP are presented  in Table.\,\ref{table:np04_data_rate}.
+
+
+Combination of the high channel count,
+%(dictated by high granularity and the volume of the detector),
+digitization frequency
+and the relatively long readout window leads to a substantial data rate and volume. It has been decided that only
+lossless compression will be applied to the data. Based on the experience of the $\mu$BooNE experiment \cite{uboone}
+the lossless compression factor is conservatively estimated as $\sim$4. This also implies that before any processing can
+take place the data will have to be decompressed.
+
+The \pd-SP DAQ is writing data to a high performance attached storage system capable of reliably handling the data
+rates as outlined in Table.\,\ref{table:np04_data_rate}. From that point it is transferred to the CERN Central Storage
+Facility which includes the high-performance distributed disk storage (EOS) and the tape archive (the CASTOR
+system at CERN) \cite{castoreos}. The data is then transmitted to Fermilab where the bulk of offline processing
+will take place.
+All these transfers are managed by an automated service based on \textit{Fermi-FTS} \cite{sam,fts}.
 
 
 
 \section{Data Quality Monitoring}
 The protoDUNE-SP experiment will use an Online Monitoring system which will obtain data directly
-from the Data Acquisition System. It is characterized by very low latency, high bandwidth and
+from the Data Acquisition System. It is characterized by a  low latency, high bandwidth and
 a predefined limit on the available CPU resources (located in the vicinity of the detector). This
-puts certain restrictions on what types of processing can be usefully run in this environment.
-
-Similar to many High-Energy Physics experiments which implement ``express streams'' to
-quickly conduct more detailed types of analysis in near time that can be afforded by the Online Monitoring,
-protoDUNE-SP will use a prompt processing system to support Data Quality Monitoring (DQM). It will include
-a few types of calculations, such as
+puts certain restrictions on what types of processing can be usefully accomplished in this environment.
+%Given the complex physics and readout of the detector, 
+In order to be able to produce actionable information to the experiment operators (such as estimations of the
+Liquid Argon purity, correlations of channel noise etc) the Online Monitoring needs to be complemented
+with the Data Quality Monitoring (DQM) system.
+%Similar to many High-Energy Physics experiments which implement ``express streams'' to
+%quickly conduct more detailed types of analysis in near time that can be afforded by the Online Monitoring,
+%protoDUNE-SP will use a prompt processing system to support.
+It will include a few types of calculations, such as
 \begin{itemize}
 \item Signal Processing and basic Visualization
 \item Liquid Argon purity monitoring
@@ -172,23 +201,29 @@ R Acciarri et al.
 ``Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report, Volume 4 The DUNE Detectors at LBNF''.\\~e-Print: arXiv:\textbf{1601.02984}
 %\url{http://arxiv.org/abs/1601.02984}
 
+
+\bibitem{uboone}
+B Jones et al.  ``The Status of the MicroBooNE Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013.
+
+\bibitem{castoreos}
+ L Mascetti et al. ``Disk storage at CERN.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015.
+
+
 %\bibitem{np04} 
 % Yearly report on ProtoDUNE Single Phase NP04 (2016), \textit{CERN-SPSC-2016-018}
 %\url{https://cds.cern.ch/record/2144868}
 
-\bibitem{xrootd}
-L Bauerdick et al. ``Using Xrootd to Federate Regional Storage.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
-%{XRootD software framework:}~\url{http://www.xrootd.org}
+%\bibitem{xrootd}
+% L Bauerdick et al. ``Using Xrootd to Federate Regional Storage.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
+
 
 %\bibitem{cenf}
 %{CERN Neutrino Platform}\\
 %\url{http://home.cern/about/experiments/cern-neutrino-platform}
 
 
-\bibitem{castoreos}
- L Mascetti et al. ``Disk storage at CERN.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015.
-%{CASTOR -- CERN Advanced STORage manager}:~
-%\url{http://castor.web.cern.ch/}
+
+
 
 %\bibitem{eos}
 %{The CERN Exabyte Scale Storage}\\
@@ -206,21 +241,19 @@ Norman A 2014 \textit{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB
 %%\url{http://cd-docdb.fnal.gov/cgi-%bin/RetrieveFile?docid=5412&filename=datamanagement-
 %%changeprocedures.pdf&version=1}
 
-\bibitem{nova}
-R Plunkett et al.  ``Status of the NOvA Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{120}. IOP Publishing, 2008.
+%\bibitem{nova}
+%R Plunkett et al.  ``Status of the NOvA Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{120}. IOP Publishing, 2008.
 
 
 % NOvA Neutrino Experiment:~
 % \url{https://www-nova.fnal.gov/}
 
-\bibitem{uboone}
-B Jones et al.  ``The Status of the MicroBooNE Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013.
 
 %The MicroBooNE Experiment:~
 % \url{http://www-microboone.fnal.gov/}
 
-\bibitem{dcache}
-A Millar et al.  ``dCache, agile adoption of storage technology.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
+%\bibitem{dcache}
+% A Millar et al.  ``dCache, agile adoption of storage technology.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
 % {dCache, a distributed storage solution:}~
 % \url{https://www.dcache.org/}
 
