@@ -159,32 +159,40 @@ All these transfers are managed by an automated service based on \textit{Fermi-F
 
 
 \section{Data Quality Monitoring}
-The protoDUNE-SP experiment will use an Online Monitoring system which will obtain data directly
-from the Data Acquisition System. It is characterized by a  low latency, high bandwidth and
+The protoDUNE-SP experiment will use an Online Monitoring system which obtains its input data directly
+from the Data Acquisition System. Its function is provide a quick assessment of the detector conditions, such
+as by displaying ADC spectra and their variations. It is characterized by a  low latency, high bandwidth and
 a predefined limit on the available CPU resources (located in the vicinity of the detector). This
 puts certain restrictions on what types of processing can be usefully accomplished in this environment.
-%Given the complex physics and readout of the detector, 
-In order to be able to produce actionable information to the experiment operators (such as estimations of the
-Liquid Argon purity, correlations of channel noise etc) the Online Monitoring needs to be complemented
-with the Data Quality Monitoring (DQM) system.
-%Similar to many High-Energy Physics experiments which implement ``express streams'' to
-%quickly conduct more detailed types of analysis in near time that can be afforded by the Online Monitoring,
-%protoDUNE-SP will use a prompt processing system to support.
-It will include a few types of calculations, such as
+In order for more complex metrics to be calculated and actionable information to be provided to the experiment operators
+(such as estimations of the Liquid Argon purity, noise reduction and correlations of channel noise etc) 
+the experiment will have a Data Quality Monitoring (DQM) system which complements the Online Monitoring.
+This is similar to many High-Energy Physics experiments which implement ``express streams'' to perform
+preliminary calculations on the data immediately after it leaves the DAQ.
+The \pd-SP DQM will include items such as
 \begin{itemize}
-\item Signal Processing and basic Visualization
-\item Liquid Argon purity monitoring
-\item Beam Instrumentation processing and track matching
+\item Signal Processing (noise reduction, deconvolution) and basic Visualization in 2D projections
+\item Liquid Argon purity monitoring using cosmic $\mu$ tracks
+\item Basic monitoring of the Beam Instrumentation devices
+\item Matching of beam particle tracks to signals deteected in the TPC
 \end{itemize}
 
-\section{Prompt Processing System}
+\noindent As an example, the workflow described in the first item above can be modeled as a Directed Acyclic Graph (DAG)
+is illustrated in Fig.\ref{fig:dag1}. It contains data decompression and histogramming (``ADC''), Fast Fourier Transform stage (``FFT''),
+application of digital filters and deconvolution algorithms and finally the visualization stage. Each stage in the daigram may produce
+numerical and graphic data (labeled `` vis product'' in the diagram) a fraction of which will be persisted in long-term storage for
+later reference and debugging.
 
 %%%%%%%%%%%%%%%%%%%%%%%%
 \begin{figure}[tb]
 \centering\includegraphics[width=1.0\textwidth]{dag1.pdf}
-\caption{\label{fig:dag1}DAG}
+\caption{\label{fig:dag1}An example of the Data Quality Monitoring workflow}
 \end{figure}
 %%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{The Prompt Processing System}
+TBD
+
 
 \begin{thebibliography}{99}
 
