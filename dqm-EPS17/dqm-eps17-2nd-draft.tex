@@ -48,9 +48,9 @@ The \pd program aims to validate various aspects of the DUNE  Liqiud Argon Time 
 before proceeding with the construction of the large-scale principal DUNE detectors at the Sanford Underground Research
 Facility \cite{cdrVol1, cdrVol4}. It  is designed to make a series of measurements of the interactions of
 charged particles in the Liquid Argon medium.  These measurements will be performed with a dedicated test
-beam  at the CERN SPS accelerator complex and will also include
-a large number of cosmic ray triggers. The program includes two separate
-large LArTPC prototypes, one based on a ``single-phase'' (liquid) technology and
+beam line  at the CERN SPS accelerator complex which will allow the transport of beam particles from $\sim$0.5 GeV/c
+up to 7 GeV/c. The run plan also includes a large number of cosmic ray triggers. The program includes
+two separate large LArTPC prototypes, one based on a ``single-phase'' (liquid) technology and
 the other based on a ``dual-phase'' (liquid/gaseous) TPC readout technology.
 Both detectors are placed in an extension of the CERN North Area Experimental Hall and  scheduled
 to take data in 2018. The general layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}, with
@@ -77,26 +77,29 @@ the sensitive medium with which to detect and measure ionization, with subsequen
 events of interest. To this end, it is instrumented with a large number
 of wire sensors immersed in Liquid Argon and grouped into planar arrays (termed Anode Plane Assemblies, or APAs). Each APA contains
 two induction planes and one collection plane, in a stereo angle configuration.
-The protoDUNE-SP LArTPC will contain six APAs of the same design as in the DUNE
-experiment, and of the same size which is 6$\times$2.4\,m. Drift distance is 3.6\,m
+The \pd-SP LArTPC will contain six APAs of the same design as in the DUNE
+experiment, and of the same size which is 6$\times$2.4\,m. The maximum electron drift distance (i.e. the span between
+the cathode and the APA) is 3.6\,m
 and the drift field 500\,V/cm. The fiducial volume of Liquid Argon in the detector
 is approximately 7.2$\times$7.2$\times$6.0\,m$^3$. The cryostat is shaped as a cube
 with $\sim$11\,m side (external dimensions).
 The detector features the ``cold electronics'' design
 in which the amplifiers and digitizers are placed within the cryostat and operate at
 cryogenic temperatures. Digital signals are fed to the Warm Interface Boards located
-outside of the cryostat and transmitted to the Data Acquisition System via a fiber
-optic line.
+outside of the cryostat on its top surface and then transmitted to the Data Acquisition
+System via a fiber optic line.
 
-An important part of the DUNE design is the Photon Detector capable of providing an accurate measurement
-of the event timing. It is included in protoDUNE-SP and components of this detector are integrated
+An important part of the DUNE design which is also included in \pd-SP is the Photon Detector capable
+of providing an accurate measurement of the event timing. The components of this detector are integrated
 into the APAs.
 
 In order to implement the Cosmic Ray Trigger an external system of scintillation counters is installed
 outside of the cryostat. The signals from the counters are used in the trigger logic and are also
 read out and also included in the overall data stream created by the DAQ.
 
-The beamline used in the experiment is instrumented with fiber tracking devices, Time-of-Flight and Cherenkov counters.
+The \pd-SP measurement program requires characterization of the beam particles (including tracking) and adequate triggering
+capabilities. The beamline used in the experiment is instrumented with fiber tracking devices, Time-of-Flight and
+Cherenkov counters.
 % These detectors are read out separately and their respective data is transmitted to the
 
 
@@ -161,11 +164,11 @@ All these transfers are managed by an automated service based on \textit{Fermi-F
 \section{Data Quality Monitoring}
 The protoDUNE-SP experiment will use an Online Monitoring system which obtains its input data directly
 from the Data Acquisition System. Its function is provide a quick assessment of the detector conditions, such
-as by displaying ADC spectra and their variations. It is characterized by a  low latency, high bandwidth and
-a predefined limit on the available CPU resources (located in the vicinity of the detector). This
+as by displaying raw ADC spectra and similar information. It is characterized by a  low latency, high bandwidth
+and a predefined limit on the available CPU resources (located in the vicinity of the detector). This
 puts certain restrictions on what types of processing can be usefully accomplished in this environment.
 In order for more complex metrics to be calculated and actionable information to be provided to the experiment operators
-(such as estimations of the Liquid Argon purity, noise reduction and correlations of channel noise etc) 
+(such as estimations of the Liquid Argon purity, signal characteristics after noise reduction, correlations of channel noise etc) 
 the experiment will have a Data Quality Monitoring (DQM) system which complements the Online Monitoring.
 This is similar to many High-Energy Physics experiments which implement ``express streams'' to perform
 preliminary calculations on the data immediately after it leaves the DAQ.
@@ -177,7 +180,7 @@ The \pd-SP DQM will include items such as
 \item Matching of beam particle tracks to signals deteected in the TPC
 \end{itemize}
 
-\noindent As an example, the workflow described in the first item above can be modeled as a Directed Acyclic Graph (DAG)
+\noindent As an example, the workflow described in the first item in the list above can be modeled as a Directed Acyclic Graph (DAG)
 is illustrated in Fig.\ref{fig:dag1}. It contains data decompression and histogramming (``ADC''), Fast Fourier Transform stage (``FFT''),
 application of digital filters and deconvolution algorithms and finally the visualization stage. Each stage in the daigram may produce
 numerical and graphic data (labeled `` vis product'' in the diagram) a fraction of which will be persisted in long-term storage for
@@ -191,7 +194,37 @@ later reference and debugging.
 %%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{The Prompt Processing System}
-TBD
+In order to support the Data Quality Monitoring and handle similar computational tasks which require fast turnaround during data taking,
+the ``\pd Prompt Processing System'' (or \textit{p3s}) has been developed. The requirements to that system include
+\begin{itemize}
+\item maximal simplicity of deployment and maintenance
+
+\item high degree of automation
+
+\item support of computational workflows and their prioritization
+
+\item minimal latency of the start of the workflow execution after it was created
+
+\item sufficient monitoring capabilities in order to manage and track execution of workflows and ensure quick
+reponse and corrective actions from the experiment operators
+\end{itemize}
+
+\noindent The prompt processing system as described here differs from a typical Workload Management System in a few important
+aspects, such as
+\begin{itemize}
+\item the data is assumed to be accessible transparently i.e. either reside in a filesystem mounted on the p3s worker nodes,
+or available via XRootD \cite{xrootd}; this means that data transport aspect in p3s is minimal
+
+\item to ensure guaranteed execution of high-priority workflows certain jobs and workflows can be automatically
+removed from the processing pool (i.e. partial loss of results is acceptable depending on the chosed policy)
+
+\end{itemize}
+
+\section{Design of the System}
+Conceptually p3s is similar to pilot-based Workload Management Systems such as Panda \cite{panda}, Dirac \cite{dirac} and others. In this approach,
+a pilot job (or an \textit{agent})  is submitted to a worker node either using a local batch system, or via the Grid, or using
+any other available submission mechanism. There is no explicit dependence on the type, flavor and API of the local computing
+environment apart from the pilot submission aspect.
 
 
 \begin{thebibliography}{99}
@@ -246,6 +279,20 @@ R A Illingworth ``A data handling system for modern and future Fermilab experime
 
 \bibitem{fts}
 Norman A 2014 \textit{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
+
+
+\bibitem{xrootd}
+L Bauerdick et al. ``Using Xrootd to Federate Regional Storage.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
+
+\bibitem{panda}
+T Maeno et al. ``Overview of ATLAS PanDA Workload Management.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{331}. IOP Publishing, 2011.
+
+
+\bibitem{dirac}
+A Casajus et al. ``DIRAC Pilot Framework and the DIRAC
+Workload Management System.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010.
+
+
 %%\url{http://cd-docdb.fnal.gov/cgi-%bin/RetrieveFile?docid=5412&filename=datamanagement-
 %%changeprocedures.pdf&version=1}
 
