@@ -159,8 +159,6 @@ system at CERN) \cite{castoreos}. The data is then transmitted to Fermilab where
 will take place.
 All these transfers are managed by an automated service based on \textit{Fermi-FTS} \cite{sam,fts}.
 
-
-
 \section{Data Quality Monitoring}
 The protoDUNE-SP experiment will use an Online Monitoring system which obtains its input data directly
 from the Data Acquisition System. Its function is provide a quick assessment of the detector conditions, such
@@ -203,8 +201,6 @@ the ``\pd Prompt Processing System'' (or \textit{p3s}) has been developed. The r
 
 \item support of computational workflows and their prioritization
 
-\item minimal latency of the start of the workflow execution after it was created
-
 \item sufficient monitoring capabilities in order to manage and track execution of workflows and ensure quick
 reponse and corrective actions from the experiment operators
 \end{itemize}
@@ -222,9 +218,26 @@ removed from the processing pool (i.e. partial loss of results is acceptable dep
 
 \section{Design of the System}
 Conceptually p3s is similar to pilot-based Workload Management Systems such as Panda \cite{panda}, Dirac \cite{dirac} and others. In this approach,
-a pilot job (or an \textit{agent})  is submitted to a worker node either using a local batch system, or via the Grid, or using
-any other available submission mechanism. There is no explicit dependence on the type, flavor and API of the local computing
-environment apart from the pilot submission aspect.
+a pilot job (sometimes called an \textit{agent}) is submitted to a worker node either using a local batch system, or via the Grid, or using
+any other available submission mechanism. There is no dependence on the type of the local batch system apart from the pilot
+submission aspect. The pilot can contain useful functionality such as validation of the environment and input data, checking
+storage availability etc. Subsequently, the pilot connects to the p3s server via HTTP and requests a payload jobs. The server
+picks a job (previously registered in its database by the user) based on a few criteria and responds to the pilot with a URL
+which contains the information necessary for the execution of the payload job, e.g. the location of the executable, input parameters
+and environment variables that need to be set. The pilot initiated the executon and periodically checks the state of the payload
+job, sending periodic heartbeats to the server. Once the job completes, the pilot repeats the cycle.
+
+Individual jobs as well as workflows (in the form of a GraphML-formatted file) are submitted by users
+by running a local client which uses HTTP to connect to the p3s server. Likewise, maintenance functions
+(e.g. puring of completed entries, collecting metrics etc) are implemented trough the HTTP interface.
+The system is implemented as a Django \cite{django} application with standard components such as Apache Web server
+and PostgreSQL RDBMS as the backend storage. Emphasis is made on using standard, high quality packages
+(such as for parsing graph and JSON data and table rendering) so the amount of the application code is
+failry minimal.
+
+\section{Deployment}
+The \pd Prompt Processing System has been deployed at CERN, with the Web and database services running
+on the CERN OpenStack virtual machines.
 
 
 \begin{thebibliography}{99}
@@ -258,13 +271,6 @@ B Jones et al.  ``The Status of the MicroBooNE Experiment.''  \textit{J. Phys.: 
 % L Bauerdick et al. ``Using Xrootd to Federate Regional Storage.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
 
 
-%\bibitem{cenf}
-%{CERN Neutrino Platform}\\
-%\url{http://home.cern/about/experiments/cern-neutrino-platform}
-
-
-
-
 
 %\bibitem{eos}
 %{The CERN Exabyte Scale Storage}\\
@@ -273,9 +279,6 @@ B Jones et al.  ``The Status of the MicroBooNE Experiment.''  \textit{J. Phys.: 
 
 \bibitem{sam}
 R A Illingworth ``A data handling system for modern and future Fermilab experiments.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014.
-
-%{A data handling system for modern and future Fermilab experiments}\\
-%\url{http://iopscience.iop.org/1742-6596/513/3/032045}
 
 \bibitem{fts}
 Norman A 2014 \textit{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
@@ -292,29 +295,9 @@ T Maeno et al. ``Overview of ATLAS PanDA Workload Management.'' \textit{J. Phys.
 A Casajus et al. ``DIRAC Pilot Framework and the DIRAC
 Workload Management System.'' \textit{J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010.
 
+\bibitem{django}
+N George ``Mastering Django: Core. The Complete Guide to Django 1.8 LTS'', GNW Independent Publishing, ISBN: 099461683X
 
-%%\url{http://cd-docdb.fnal.gov/cgi-%bin/RetrieveFile?docid=5412&filename=datamanagement-
-%%changeprocedures.pdf&version=1}
-
-%\bibitem{nova}
-%R Plunkett et al.  ``Status of the NOvA Experiment.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{120}. IOP Publishing, 2008.
-
-
-% NOvA Neutrino Experiment:~
-% \url{https://www-nova.fnal.gov/}
-
-
-%The MicroBooNE Experiment:~
-% \url{http://www-microboone.fnal.gov/}
-
-%\bibitem{dcache}
-% A Millar et al.  ``dCache, agile adoption of storage technology.''  \textit{J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012.
-% {dCache, a distributed storage solution:}~
-% \url{https://www.dcache.org/}
-
-%\bibitem{larsoft}
-%{LArSoft Collaboration}:~
-%\url{http://larsoft.org//}
 
 
 \end{thebibliography}
