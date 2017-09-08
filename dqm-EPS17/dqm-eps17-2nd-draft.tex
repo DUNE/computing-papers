@@ -222,8 +222,8 @@ a pilot job (sometimes called an \textit{agent}) is submitted to a worker node e
 any other available submission mechanism. There is no dependence on the type of the local batch system apart from the pilot
 submission aspect. The pilot can contain useful functionality such as validation of the environment and input data, checking
 storage availability etc. Subsequently, the pilot connects to the p3s server via HTTP and requests a payload jobs. The server
-picks a job (previously registered in its database by the user) based on a few criteria and responds to the pilot with a URL
-which contains the information necessary for the execution of the payload job, e.g. the location of the executable, input parameters
+picks a job -- previously registered in its database by the user as an entry containing all necessary information -- based preset priorities
+and responds to the pilot with a message conveying this infromation. This may include the location of the executable, input parameters
 and environment variables that need to be set. The pilot initiated the executon and periodically checks the state of the payload
 job, sending periodic heartbeats to the server. Once the job completes, the pilot repeats the cycle.
 
