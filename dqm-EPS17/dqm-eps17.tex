@@ -23,8 +23,8 @@
 %        E-mail: \email{...}}
 
 \abstract{
-\noindent The Deep Underground Neutrino Experiment (DUNE) will employ a uniquely large multi-kiloton
-Liquid Argon Time Projection Chamber with separate modules utilizing
+\noindent The Deep Underground Neutrino Experiment (DUNE) will employ a uniquely large % multi-kiloton
+Liquid Argon Time Projection Chamber with four separate modules of 10kt fiducial mass each utilizing
 single and dual-phase Liquid Argon technologies. An experimental 
 program (``protoDUNE'')  has been initiated which includes a beam and cosmic ray test of large-scale DUNE prototypes at CERN in 2018.
 The volume of data to be collected by the protoDUNE single-phase detector will amount to a few petabytes
@@ -75,7 +75,8 @@ It has also received the official CERN designation as the CERN experiment NP04.
 This device is essentially an ionization chamber in which Liquid Argon serves both as the target and
 the sensitive medium with which to detect and measure ionization, with subsequent full 3D resonstruction of
 events of interest. To this end, it is instrumented with a large number
-of wire sensors immersed in Liquid Argon and grouped into planar arrays (termed Anode Plane Assemblies, or APAs). Each APA contains
+of wire sensors immersed in Liquid Argon and grouped into planar arrays (termed Anode Plane Assemblies, or APAs).
+Each face of the APA contains
 two induction planes and one collection plane, in a stereo angle configuration.
 The \pd-SP LArTPC will contain six APAs of the same design as in the DUNE
 experiment, and of the same size which is 6$\times$2.4\,m. The maximum electron drift distance (i.e. the span between
@@ -120,6 +121,7 @@ Detector Parameter & Target \\
 TPC channel count & 15,360 \\
 Digitization frequency & 2\,MHz \\
 Nominal electron drift time & 2.2\,ms\\
+Nominal electron drift velocity & 1.6\,mm/$\mu$s\\
 Readout window & 5\,ms \\
 SPS spill time& 4.8\,s\\
 SPS cycle& 22.5\,s\\
@@ -136,17 +138,16 @@ Buffer to store 3 days worth of data & 300\,TB\\
 \end{table}
 
 The DUNE/\pd single-phase LArTPC design has a fine spatial resolution (with wire pitch of $\sim$\,5mm)
-and thus a high channel count. The 2\,MHz digitization provides similarly fine spatial and
-temporal resolution along the drift axis of the detector. The readout window is  set to 5\,ms 
+and thus a high channel count. The 2\,MHz digitization frequency provides similarly fine
+% spatial and temporal
+resolution along the drift axis of the detector. The readout window is  set to 5\,ms 
 based on the nominal scale of electron drift time across the active volume (2.2\,ms) to allow for detection
 of ionization immediately before and after the event of interest.  These characteristics are typical of
 similar modern Liquid Argon TPC detectors. The principal parameters which define the expected data rate and
 volume in protoDUNE-SP are presented  in Table\,\ref{table:np04_data_rate}.
 
 
-Combination of the high channel count,
-%(dictated by high granularity and the volume of the detector),
-digitization frequency
+Combination of the high channel count, projected trigger rate, digitization frequency
 and the relatively long readout window leads to a substantial data rate and volume. It has been decided that only
 lossless compression will be applied to the data. Based on the experience of the $\mu$BooNE experiment \cite{uboone}
 the lossless compression factor is conservatively estimated as $\sim$4. This also implies that before any processing can
@@ -161,7 +162,7 @@ All these transfers are managed by an automated service based on \textit{Fermi-F
 
 \section{Data Quality Monitoring}
 The protoDUNE-SP experiment will use an Online Monitoring system which obtains its input data directly
-from the DAQ.
+and in real time from the DAQ.
 % Data Acquisition System.
  Its function is provide a very quick assessment of the general detector conditions
 and to ascertain proper functioning of the readout chain. Online Monitoring characterized by low latency, high bandwidth
@@ -171,7 +172,7 @@ In order for more complex metrics to be calculated and actionable information to
 (such as estimations of the Liquid Argon purity, signal characteristics after noise reduction, correlations of channel noise etc) 
 the experiment will have a separate Data Quality Monitoring (DQM) system which complements the Online Monitoring.
 This is similar to many High-Energy Physics experiments which implement ``express streams'' to perform
-preliminary calculations on the data immediately after it leaves the DAQ. DQM is characterized by more relaxed
+preliminary calculations on the data almost immediately after it leaves the DAQ. DQM is characterized by more relaxed
 requiremens regarding latency of processing (which can take tens of minutes) and higher scalability, allowing
 utilization of resources such the CERN Tier-0 computing facility.
 %The \pd-SP DQM
@@ -221,7 +222,7 @@ aspects, such as
 or available via XRootD \cite{xrootd}; this means that data transport aspect in p3s is minimal
 
 \item to ensure guaranteed execution of high-priority workflows certain jobs and workflows can be automatically
-removed from the processing pool (i.e. partial loss of results is acceptable depending on the chosed policy)
+removed from the processing pool (i.e. partial loss of results is acceptable depending on the choice of policy)
 
 \end{itemize}
 
@@ -274,17 +275,17 @@ using the popular NetworkX Python module, again minimizing the application code.
 \section{Deployment}
 The \pd Prompt Processing System has been deployed at CERN, with the Web and database services running
 on the CERN OpenStack virtual machines (CentOS 7). Installation of the server and client application
-software is trivial since it is Python code which can be pulled from a repository or installed from a tarball.
-
- Python 3.5 is required (mainly due to the recent version
-of Django on which p3s is based) which is different from the system version and must be installed (compiled) separately.
+software is straightforward since it is Python code which can be pulled from a repository or installed from a tarball.
+Python 3.5 is required.
+% (mainly due to the recent version of Django on which p3s is based).
+% which is different from the system version and must be installed (compiled) separately.
 Since it has to be installed in the user space on the client machines  at CERN (such as running the CLI interface)
 due to the site policy the Python \textit{virtual environment} appears to be the optimal solution. The CERN-supported
 ``acrontab'' utility which is equivalent to Unix crontab but is optimized for a large Kerberoes-authenticated cluster
 is used to perform periodic maintenance tasks in p3s.
 
-At the time of writing p3s is running continuously on the lxbatch facility at CERN. A number of test including scalability
-tests are under way utilizing realistic payload jobs developed for \pd.
+At the time of writing p3s is running continuously on the lxbatch facility at CERN. To date, tens of thousands of test jobs have run.
+Scalability tests are under way utilizing realistic payload jobs developed for \pd.
 
 
 \begin{thebibliography}{99}
