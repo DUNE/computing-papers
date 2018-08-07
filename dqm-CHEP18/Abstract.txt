@@ -1,0 +1,20 @@
+Title: The ProtoDUNE Prompt Processing System
+
+The Deep Underground Neutrino Experiment (DUNE) will employ a uniquely large Liquid Argon
+Time Projection chamber as the main component of its Far Detector. It will include four
+10kt modules which will include single and dual-phase Liquid Argon technologies.
+In order to validate its design an ambitious experimental program (named "protoDUNE") has
+been initiated which includes a beam test of large-scale DUNE prototypes at CERN in 2018.
+This presentation concerns itself with the single-phase detector. The volume of data to
+be collected in this test will amount to a few petabytes and the sustained rate of data
+sent to mass storage will be in the range of a few hundred MB per second. In addition
+to careful design of the Data Acquisition, Online Monitoring and Data Handling systems,
+the protoDUNE experiment requires substantial Data Quality Monitoring capabilities in
+order to ascertain the condition of the detector and its various subsystems. To this end,
+a Prompt Processing system has been designed which is complementary to Online Monitoring
+and is characterized by lower bandwidth, substantial CPU resources and end-to-end latency
+on the scale of a few minutes. We present the design of the ProtoDUNE Prompt Processing
+system, the current status of its development and testing and issues related to its interfaces
+and deployment.
+
+
