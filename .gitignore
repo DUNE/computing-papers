@@ -1,6 +1,7 @@
 dqm-eps17-1st-draft.pdf
 dqm-eps17-2nd-draft.pdf
 dqm-eps17.pdf
+dqm*.pdf
 ~*
 ## Core latex/pdflatex auxiliary files:
 *.aux
@@ -39,7 +40,7 @@ dqm-eps17.pdf
 *.synctex
 *.synctex(busy)
 *.synctex.gz
-*.synctex.gz(busy)
+*.synctex.gz*
 *.pdfsync
 
 ## Auxiliary and intermediate files from other packages:
