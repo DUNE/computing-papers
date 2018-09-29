@@ -54,32 +54,31 @@ tens of minutes.
 %
 \section{Introduction}
 \label{sec:intro}
-The \pd-SP experiment utilizes a large-scale prototype of the single-phase version of the
-Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one
+The \pd-SP experiment is designed to study a large-scale prototype of the single-phase version of
+the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one
 of the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
 Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is tested
-utilizing a dedicated beam line  at the CERN SPS accelerator complex,
-and the run plan also includes a large number of cosmic ray triggers. The layout of the
-experimental area is shown in Fig.\,\ref{fig:np02np04}, with the single-phase detector seen as
-a cubic structure (the cryostat) on the right-hand side of the diagram. 
-In order to provide
-the cosmic ray triggering capability an external system of scintillation counters is installed
-outside of the cryostat. There is also an array of beam instrumentation devices utilized
-in the beam trigger logic and characterization of the beam.
+utilizing a dedicated beam line  at the CERN SPS accelerator complex, and the run plan also includes
+a large number of cosmic ray triggers. The layout of the experimental area is shown in Fig.\,\ref{fig:np02np04},
+with the single-phase detector seen as a cubic structure (the cryostat) on the right-hand side of the diagram. 
+In order to provide the cosmic ray triggering capability an external system of scintillation counters is installed
+outside of the cryostat. There is also an array of beam instrumentation devices utilized in the beam
+trigger logic and characterization of the beam.
 
- Located in the vicinity of the detectors
-are enclosures for the online computing infrastructure (including Data Acquisition, Online Buffer etc). 
-which shown schematically as yellow blocks in the upper-right portion of  the diagram.
-There is a dedicated 20 Gb/s network connection to the CERN central storage facilities.
+ Located in the vicinity of the detectors are enclosures for the online computing infrastructure
+(including Data Acquisition, Online Buffer etc) shown schematically as yellow blocks in the upper-right
+portion of  the diagram. There is a dedicated 20 Gb/s network connection from the experiment
+to the CERN central storage facilities.
 The Data Acquisition System is equipped with an Online Monitor which receives data via the network
 and does processing in real time.
 Certain types of processing in the category of Data Quality Monitoring (DQM)
 require more resources than are available within the DAQ footprint, and include jobs that take substantially
 longer time than processes run in the Online Monitor. It is also necessary to insulate DAQ from
 potential disruptions due to constant software updates of the DQM software during commissioning
-and operation of \pd.
-For these reasons a separate ``\pd Prompt Processing System''
-(abbreviated as \textbf{p3s}) was put in place \cite{eps} with the following characteristics:
+and operation of \pd. Finally, the Online Monitor is a real time system and not well suited for long term
+preservation and cataloging of the data produced, such as plots, histograms, tables etc.
+For these reasons a separate ``\pd Prompt Processing System'' (abbreviated as \textbf{p3s}) was put
+in place \cite{eps} with the following characteristics:
 \begin{itemize} 
 
 \item lower bandwidth as compared to the Online Monitor (i.e. a small fraction of events is processed,
@@ -91,6 +90,9 @@ but in more detail)
 
 \item flexibility in introducing, modifying and configuring software without any risk of disruption of
 critical DAQ functionality
+
+\item substantial storage and browsing capability allowing the users to access and study
+the DQM results in an efficient manner
 
 \end{itemize}
 
@@ -122,11 +124,11 @@ located in the experimental hall  they are picked up by an instance of the \text
 
 EOS serves as the principal staging area from which the data get copied to tape storage and
 are also transmitted to FNAL for offline processing by a separate instance of \textit{Fermi FTS}.
-Importantly, EOS also serves to stage the input data for the prompt processing system and also to
-store the outputs i.e. the various data products produced by DQM jobs. This design ensures
-a large degree of independence of prompt processing and DQM from the DAQ and vice versa, but
-it also introduces a latency due to the way data transfer from the Online Buffer operates. This latency is
-of the scale of a few minutes and is considered acceptable in the context of DQM.
+Importantly, EOS also serves to stage the input data for the prompt processing system and to
+store and preserve the DQM output i.e. the various data products produced by DQM jobs. This design
+ensures a large degree of independence of prompt processing and DQM from the DAQ and vice versa,
+but it also introduces a latency due to the way data transfer from the Online Buffer operates. This latency
+is of the scale of a few minutes and is considered acceptable in the context of DQM.
 
 \begin{figure}[tb]
 \centering\includegraphics[width=0.9\textwidth]{figures/protoDUNE_data_flow_2018_v1.png}
@@ -134,30 +136,88 @@ of the scale of a few minutes and is considered acceptable in the context of DQM
 \end{figure}
 
 
-
-\section{Data Quality Monitoring}
-The protoDUNE-SP experiment will use an Online Monitoring system which obtains its input data directly
-and in real time from the DAQ.
-% Data Acquisition System.
- Its function is provide a very quick assessment of the general detector conditions
-and to ascertain proper functioning of the readout chain. Online Monitoring characterized by low latency, high bandwidth
-and limited CPU resources (located in the vicinity of the detector). This puts restrictions on what types of processing
-can be usefully accomplished in this environment.
-In order for more complex metrics to be calculated and actionable information to be provided to the experiment operators
-(such as estimations of the Liquid Argon purity, signal characteristics after noise reduction, correlations of channel noise etc) 
-the experiment will have a separate Data Quality Monitoring (DQM) system which complements the Online Monitoring.
-This is similar to many High-Energy Physics experiments which implement ``express streams'' to perform
-preliminary calculations on the data almost immediately after it leaves the DAQ. DQM is characterized by more relaxed
-requiremens regarding latency of processing (which can take tens of minutes) and higher scalability, allowing
-utilization of resources such the CERN Tier-0 computing facility.
-%The \pd-SP DQM
-It will include tasks such as
+\section{Data Quality Monitoring and Prompt Processing}
+\subsection{DQM Applications}
+The following types of applications are included in the \pd DQM suite:
 \begin{itemize}
-\item Signal Processing (noise reduction, deconvolution) and basic Visualization in 2D projections
+\item Continuous monitoring of certain elements of electronics in the the readout chain
+\item LArTPC signal processing (noise reduction, deconvolution)
+\item Basic event visualization in 2D
+\item Initial data preparation for an advanced 3D event display running on a separate system
 \item Liquid Argon purity monitoring using cosmic $\mu$ tracks
-\item Basic monitoring of the Beam Instrumentation devices
-\item Matching of beam particle tracks to signals deteected in the TPC
+\item Estimation of the number of hits and charge collected in each section of the LArTPC, RMS of these values
+\item Estimation of signal-to-noise ratio
 \end{itemize}
+
+For a few of these metrics the system produces time-series plots in addition to the tabulated data.
+The DQM jobs running in the system are often called \textit{payload jobs} so as to distinguish
+them to service and infrastructure jobs which exist to support the function of the overall system.
+
+
+\subsection{Design of the Prompt Processing System}
+
+Computing resources for the Data Quality Monitoring in \pd-SP are managed by its prompt processing system
+which is separate from both the DAQ and the main production system. This is similar to many High-Energy Physics
+experiments which implement ``express streams'' to perform preliminary calculations on the data very soon
+after it leaves the DAQ.
+
+The \textit{\pd Prompt Processing System} (p3s) allows the experiment to benefit from combination of high capacity, high
+performance distributed storage (CERN EOS), networking resources and the CERN Tier-0 computing facility.
+By utilizing the pilot-based approach to workload management which is the cornerstone of such well-known
+systems as PanDA and DIRAC \cite{panda,dirac} p3s achieves low latency of automated job submission
+as compared to running jobs directly on the batch trsource (which is currently HTCondor at CERN Tier-0).
+In addition, in combination with a Web service (and its back-end database) this approach provides excellent
+monitoring capabilities. There are two pricipal components in the prompt processing system - a single instance
+of the p3s server and multiple pilots running on distributed resources.
+
+Pilot jobs (sometimes called \textit{agents}) as submitted to worker nodes which may be
+a part of a Grid site or a local batch system. Subsequently, each pilot sends a HTTP request to the p3s server
+to register and to try to obtain a description of a job that needs to be executed.
+Jobs descriptions exist as records in the p3s database as entries created independently from pilots by
+external clients (automatic or actuated by the user). The server matches a job records with a pilot and
+replies to its HTTP request with a message containing all necessary information needed for job
+execution (e.g. the path to the executable and the configuration file, additional environment variables etc).
+The pilot parses the message and initiates the job  execution. Once the job completes, the pilot repeats the cycle
+by sending anothe request to the server. The pilots are configured on the batch system to persist for a period
+of time much larger than typical execution time of the payload  jobs so the batch slot is already primed and the next
+job starts very quickly.
+
+\subsection{Design of the DQM content service}
+The results produced by the payload jobs managed by p3s can only be useful is there is an efficient
+interface for the users to access those. Such interface is optimally implemented
+as a Web service accessible through a Web browser and a few CLI utilities. Combination of
+functionality across the p3s and DQM content servers is not optimal since the workload
+management component (p3s) needs to maintain high availability and the extra load created
+by content requests has to be avoided. Content can be stored in the system in two ways:
+\begin{itemize}
+
+\item When the basic unit of data that needs to be stored is a file (such as an image in the PNG format) such
+file is stored on disk (EOS), but it's location is recorded in a database so it can be later retrieved
+and access through a dynamically generated Web page, perhaps based on some selection criteria
+
+\item When the basic unit of data is an array of numbers these are for the most part stored directly
+in the database and are used in dynamically generated Web pages either in tabulated format or
+to generate graphs by using Javascript
+
+\end{itemize}
+
+
+
+\section{Technologies and Interfaces}
+
+The client-server architecture is used. The p3s server is implemented as a Django \cite{django} application
+with standard components such as Apache Web server and PostgreSQL RDBMS as the backend storage
+(a few other RDBMS can be used as well). All interactions with the server
+are conducted via HTTP. The server provides monitoring capabilities by allowing the user to browse and navigate
+tabulated data describing the state of the various objects in the system (e.g. pilots, jobs, data files etc).
+The design of monitoring pages leverages the well known ``django-tables2'' package which results
+in a very small amout of application code.
+
+A suite of CLI clients is provided for managing pilots, jobs and
+other components. In case interaction with the server requires exhange of messages these are
+formatted as JSON. Workflows (DAGs) can be described in a standard format (GraphML) which is parsed
+using the popular NetworkX Python module, again minimizing the application code.
+
 
 
 %For tables use syntax in table~\ref{tab-1}.
