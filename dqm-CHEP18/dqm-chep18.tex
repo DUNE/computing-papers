@@ -50,8 +50,8 @@ and data quality monitoring systems deployed for the single-phase version of the
 \section{Introduction}
 \label{sec:intro}
 The \pd-SP experiment is designed to study a large-scale prototype of the single-phase version of
-the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become
-the principal element of the DUNE apparatus to be constructed at the Sanford Underground
+the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one of
+the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
 Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
 in the CERN North Experimental Hall and tested utilizing a dedicated beam line from the CERN SPS
 accelerator complex. The run plan also includes a large number of cosmic ray triggers.
@@ -61,15 +61,18 @@ Commisioning of the detector took place in September of 2018.
 
 \begin{figure}[tb]
 \centering\includegraphics[width=0.7\textwidth]{figures/np04_photo_2018_v1.png}
-\caption{\label{fig:np04_photo}View of the top of the \pd-SP cryostat. The direction of the particle beam is from left to right.
-Readout systems are visible on top of the detector, with DAQ racks in front.}
+\caption{\label{fig:np04_photo}
+View of the top of the \pd-SP apparatus.
+The direction of the particle beam is from left to right.
+Readout systems are visible on top of the detector, with DAQ racks in front.
+}
 \end{figure}
 
 
 In order to provide the cosmic ray triggering capability a large array of scintillation
-counters is installed outside of the cryostat. There is also an array of beam instrumentation devices
-utilized in the  trigger logic and characterization of the beam. Fig.\ref{fig:np04_photo}
-shows the view of the top of the cryostat with elements of the readout hardware.
+counters is installed outside of the cryostat. A number of beam instrumentation devices
+are used to feed the  trigger logic and to characterize the beam. Fig.\ref{fig:np04_photo}
+shows the view of the top of the \pd-SP apparatus and a part of its readout hardware.
 % Located in the vicinity of the detectors are enclosures for the online computing infrastructure
 %(including Data Acquisition, Online Buffer etc) shown schematically as yellow blocks in the upper-right
 %portion of  the diagram.
@@ -134,16 +137,19 @@ trigger rate and lossless compression applied in the DAQ instantaneous data rate
 \subsection{Data Flow and Distribution}
 Principal elements of data transmission and storage in \pd are illustrated in Fig.\,\ref{fig:dataflow}.
 Once the raw data are captured by the Data Acquisition System and written to the Online Buffer
-located in the experimental hall  they are picked up by an instance of the \textit{Fermi FTS} system
-\cite{sam,fts} which manages the transfer to the CERN distributed storage system (EOS).
+located in the vicinity of the detector in the experimental hall  they are picked up by an instance of
+the \textit{Fermi FTS} data handling system \cite{sam,fts} which manages the transfer to EOS \cite{castoreos}
+(the CERN distributed disk storage system).
 
-EOS serves as the principal staging area  \cite{eos_role} from which the data get copied to tape storage and
-are also transmitted to FNAL for offline processing by a separate instance of \textit{Fermi FTS}.
+EOS serves as the principal staging area  \cite{eos_role} from which the data get copied to tape
+storage at CERN (``CASTOR'')  and are also transmitted to FNAL for replication, distribution and
+offline processing by a separate instance of \textit{Fermi FTS}.
 Importantly, EOS also serves to stage the input data for the prompt processing system and to
-store and preserve the DQM output i.e. the various data products produced by DQM jobs. This design
-ensures a large degree of independence of prompt processing and DQM from the DAQ and vice versa,
+store and preserve  the various data products produced by DQM jobs. This design
+ensures a large degree of independence of prompt processing and DQM from the DAQ and vice versa
+(which is desirable),
 but it also introduces a latency due to the way data transfer from the Online Buffer operates. This latency
-is of the scale of a few minutes and is considered acceptable in the context of DQM.
+is on the scale of a few minutes and is considered acceptable in the context of DQM.
 
 \begin{figure}[tb]
 \centering\includegraphics[width=0.9\textwidth]{figures/protoDUNE_data_flow_2018_v1.png}
@@ -153,7 +159,8 @@ is of the scale of a few minutes and is considered acceptable in the context of 
 
 \section{Data Quality Monitoring and Prompt Processing}
 \subsection{DQM Applications}
-The following types of applications were included in the \pd DQM suite during the detector
+The following types of applications were developed by the members of the DUNE Collaboration and
+included in the \pd DQM suite during the detector
 commissioning:
 \begin{itemize}
 \item Monitoring of front-end motherboards
@@ -184,7 +191,7 @@ By utilizing the pilot-based approach \cite{eps} to workload management which is
 systems as PanDA and DIRAC \cite{panda,dirac} p3s achieves low latency of automated job submission
 as compared to running jobs directly on the batch trsource (which is currently HTCondor at CERN Tier-0).
 In addition, since it combines a Web service and a back-end database this approach provides excellent
-monitoring capabilities.
+job monitoring capabilities.
 
 % There are two pricipal components in the prompt processing system - a single instance
 % of the p3s server and multiple pilots running on distributed resources.
@@ -214,11 +221,13 @@ The DQM output (the ``content'') can be stored in the system in two ways:
 
 \item When the basic unit of data that needs to be stored is a file e.g.\,an image in the PNG format such
 file is stored on disk (EOS) and its location is recorded in a database so it can be later retrieved
-and accessed through a dynamically generated Web page,  based on some selection criteria
+and accessed through a dynamically generated Web page,  based on some selection criteria.
+This is simplified by the fact that the EOS storage is directly accessible from the Apache server
+used for this purpose.
 
 \item When the basic unit of data is an array of numbers these are for the most part stored directly
 in the database and are used in dynamically generated Web pages either in tabulated format or
-to generate graphs by using Javascript
+to generate graphs by using Javascript.
 
 \end{itemize}
 
@@ -228,16 +237,22 @@ to generate graphs by using Javascript
 \subsection{Web Services}
 
 Both p3s and the DQM content server ares implemented as Django \cite{django} applications
+written in Python
 with standard components such as the Apache Web server and PostgreSQL RDBMS as the backend storage
 (a few other RDBMS can be used as well). All interactions with either service
-are conducted via HTTP.
+are conducted via HTTP either from a Web browser or one of the included CLI utilities.
+While the p3s instance deployed for \pd-SP is configured to use
+the resources provided by CERN the system itself is platform-agnostic in the sense that it can manage
+the resources of any cluster or group of worker nodes and in fact has been succesfully tested
+in these scenarios as well.
 
-The p3s server is responsible for workload management by matching the pilots to the job requests,
+The p3s server is responsible for workload management by matching available pilots to the job requests,
 and also provides monitoring capabilities by allowing the user to browse and navigate
 tabulated data describing the state of the various objects in the system (e.g. pilots, jobs, data files etc).
-The design of monitoring pages leverages the well known \textit{``django-tables2''} package which results
-in a very small amout of application code. An example of monitoring pages served by p3s is
-presented in Fig.\,\ref{fig:p3s_dash}.
+The design of the monitoring pages leverages the Django Web page template functionality and
+the well known \textit{``django-tables2''} package which results
+in a very small amout of application code. An example of pages served by p3s is
+presented in Fig.\,\ref{fig:p3s_dash} (the p3s dashboard).
 
 \begin{figure}[tb]
 \centering\includegraphics[width=1.0\textwidth]{figures/p3s_dash_2018_v1.png}
@@ -246,11 +261,80 @@ presented in Fig.\,\ref{fig:p3s_dash}.
 
  A suite of CLI clients is provided as a component of p3s for managing pilots, jobs and
 other entities. In case interaction with the server requires exhange of messages these are
-formatted as JSON. 
+formatted as JSON, pimarily because it is trivial to parse it in Python.
 
-\subsection{Interaction between p3s and the Content Server: the self-describing data}
+There is a centralized log of critical system messages stored in the p3s database which
+is used to troubleshoot the system. It is also used to automatically generate alarms
+for the operators should certain parameters fall out of their nominal range.
+
+The p3s design also supports workflows described as Directed Acyclical Graphs (DAGs)
+however in the current run of the experiment this functionality was not used.
+
+\subsection{The Content Server Interface: the Self-Describing Data}
 Due to highly dynamic nature of application development in the context of the \pd beam
-test it
+test it is not practical to create static menus, links or make many assumptions about
+the categories and content of plots and other data products coming out of the DQM.
+Any such information or logic included in the server in a static manner would result
+in frequent and time-consuming updates of the server code.
+
+Instead, each DQM application is expected to produce two or more files in accordance
+with simple JSON schemas. One file is referred to as ``summary'' and it contains basic
+information about the attributes of the raw data file used as input, such the run number
+and a few other indices. This file is stored as a JSON string in the back-end database
+of the DQM server. It may also optionally contain a number of summary metrics
+that are then parsed by the page-generating logic of the server and presented
+in the DQM tables.
+
+The second JSON file (or a group of files) referred to as ``description'' or ``file list'' provides references to
+plots produced in formats such as PNG, as well as description of ``categories''
+and sub-categories which are automatically translated by the server into
+groups of menus with links necessary to access these plots on the dynamically generated
+Web pages. An example of such menus is presented in Fig.\,\ref{fig:tpc_monitor}.
+This approach greatly simplifies integration of different types of payload jobs 
+and data into the DQM content service, with minimal or no changes to the
+server code.
+
+\begin{figure}[tb]
+\centering\includegraphics[width=1.0\textwidth]{figures/tpc_monitor_2018_v1.png}
+\caption{\label{fig:tpc_monitor}An example of dynamically generated DQM menus and links}
+\end{figure}
+
+
+\begin{figure}[tb]
+\centering\includegraphics[width=1.0\textwidth]{figures/purity_chart_2018_v1.png}
+\caption{\label{fig:purity_chart}An example of dynamically generated time series plot in DQM.}
+\end{figure}
+
+A few types of data in DQM can be accessed more efficiently if they are presented as time
+series plots. To handle such cases a Web page template was created containing
+Javascript code making use of Google Charts functionality, so that the time series
+plots are generated on the fly at the time of the user's request, based on the content
+of the DQM database.
+
+\subsection{Deployment}
+
+The code of p3s and the DQM content server is version-controlled using \textit{git}
+and GitHub. Code updates are done by priviledged users by updating the code
+on the servers from the repository and subsequent service restart.
+
+The p3s and DQM services as well as their back-end database servers have been deployed on
+virtual machines within the CERN OpenStack cloud. Processes that need to be run periodically,
+i.e. refreshing the p3s pilot job population, automatic DQM job generation based on detection
+of fresh raw data written to EOS etc are maintained using \textit{``acrontab''} which is a kerberized
+distributed version of crontab used at the \textit{lxplus} interactive Linux facility CERN.
+
+\section{Conclusions}
+
+The \pd-SP experiment which started operation at CERN in 2018 requires adequate Data
+Quality Monitoring. To meet these requirements the DUNE Collaboration has developed
+and deployed Web services which manage the execution of the DQM jobs on the CERN
+facilities and dynamic handling of the DQM data content with efficient user interfaces.
+Emphasis was made on using existing and proven technologies such as Django
+for the Web applicaiton framework, the concept of utilizing pilot jobs for
+efficient workload distribution and a number of others. The \pd-SP prompt
+processing and DQM software which it supports were successfully used during
+the commissioning phase of the experiment and will remain an imporant part
+of its ongoing operation.
 
 %For tables use syntax in table~\ref{tab-1}.
 %\begin{table}
@@ -273,6 +357,8 @@ test it
 %
 % Non-BibTeX users please use
 %
+
+
 \begin{thebibliography}{99}
 
 
@@ -295,9 +381,6 @@ processing system}. Proceedings of Science (EPS-HEP2017) 513
 %B. Jones et al.  \emph{The Status of the MicroBooNE Experiment.~J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013,
 %doi:10.1088/1742-6596/408/1/012028
 
-%\bibitem{castoreos}
-% L. Mascetti et al. \emph{Disk storage at CERN.~J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015,
-%doi:10.1088/1742-6596/664/4/042035
 
 \bibitem{sam}
 R. A. Illingworth \emph{A data handling system for modern and future Fermilab experiments.~J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014,
@@ -305,6 +388,10 @@ doi:10.1088/1742-6596/513/3/032045
 
 \bibitem{fts}
 A. Norman \emph{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
+
+\bibitem{castoreos}
+ L. Mascetti et al. \emph{Disk storage at CERN.~J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015,
+doi:10.1088/1742-6596/664/4/042035
 
 \bibitem{eos_role}
 S. Fuess et al. \emph{Design of the protoDUNE raw data management
