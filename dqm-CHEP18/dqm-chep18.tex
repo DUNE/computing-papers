@@ -39,15 +39,10 @@
 
 \abstract{%
 The DUNE Collaboration is conducting an experimental program named ''protoDUNE''
- which includes a beam test of large-scale DUNE prototypes located at CERN in 2018,
-and a cosmic ray run in 2019. This paper concerns itself with the single-phase version
-of the Liquid Argon Time Projection Chamber which is the principal component of
-the detector. Both the volume of the data taken and the sustained rate of data transmittion
-to mass storage are quite substantial. In order to support the substantial Data Quality Monitoring
-requirements of the experiment we have designed and deployed a Prompt Processing System
- that is complementary to the Online Monitoring and is characterized by a lower bandwidth,
-substantial CPU resources and end-to-end latency on the scale of a few minutes and perhaps
-tens of minutes. 
+which includes a beam test of two large-scale  prototypes of the Liquid Argon Time
+Projection Chamber located at CERN. We present the status of prompt processing
+and data quality monitoring systems deployed for the single-phase version of the detector.
+
 }
 %
 \maketitle
@@ -55,38 +50,55 @@ tens of minutes.
 \section{Introduction}
 \label{sec:intro}
 The \pd-SP experiment is designed to study a large-scale prototype of the single-phase version of
-the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one
-of the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
-Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is tested
-utilizing a dedicated beam line  at the CERN SPS accelerator complex, and the run plan also includes
-a large number of cosmic ray triggers. The layout of the experimental area is shown in Fig.\,\ref{fig:np02np04},
-with the single-phase detector seen as a cubic structure (the cryostat) on the right-hand side of the diagram. 
-In order to provide the cosmic ray triggering capability an external system of scintillation counters is installed
-outside of the cryostat. There is also an array of beam instrumentation devices utilized in the beam
-trigger logic and characterization of the beam.
+the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become
+the principal element of the DUNE apparatus to be constructed at the Sanford Underground
+Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
+in the CERN North Experimental Hall and tested utilizing a dedicated beam line from the CERN SPS
+accelerator complex. The run plan also includes a large number of cosmic ray triggers.
+%The layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}, with the single-phase
+%detector seen as a cubic structure (the cryostat) on the right-hand side of the diagram. 
 
- Located in the vicinity of the detectors are enclosures for the online computing infrastructure
-(including Data Acquisition, Online Buffer etc) shown schematically as yellow blocks in the upper-right
-portion of  the diagram. There is a dedicated 20 Gb/s network connection from the experiment
-to the CERN central storage facilities.
-The Data Acquisition System is equipped with an Online Monitor which receives data via the network
-and does processing in real time.
-Certain types of processing in the category of Data Quality Monitoring (DQM)
-require more resources than are available within the DAQ footprint, and include jobs that take substantially
-longer time than processes run in the Online Monitor. It is also necessary to insulate DAQ from
-potential disruptions due to constant software updates of the DQM software during commissioning
-and operation of \pd. Finally, the Online Monitor is a real time system and not well suited for long term
-preservation and cataloging of the data produced, such as plots, histograms, tables etc.
+\begin{figure}[tb]
+\centering\includegraphics[width=0.7\textwidth]{figures/np04_photo_2018_v1.png}
+\caption{\label{fig:np04_photo}View of the top of the \pd-SP cryostat. The direction of the particle beam is from left to right.
+Readout systems are visible on top of the detector, with DAQ racks in front.}
+\end{figure}
+
+
+In order to provide the cosmic ray triggering capability a large array of scintillation
+counters is installed outside of the cryostat. There is also an array of beam instrumentation devices
+utilized in the  trigger logic and characterization of the beam. Fig.\ref{fig:np04_photo}
+shows the view of the top of the cryostat with elements of the readout hardware.
+% Located in the vicinity of the detectors are enclosures for the online computing infrastructure
+%(including Data Acquisition, Online Buffer etc) shown schematically as yellow blocks in the upper-right
+%portion of  the diagram.
+There is a dedicated 20 Gb/s network connection from the experiment to the CERN central storage facilities.
+
+The \pd-SP Data Acquisition is equipped with a capable Online Monitoring System which receives data via
+the network and does processing in real time. However, certain types of processing e.g. application of
+digital filtering techniques to reduce noise present in the waveforms read out from the detector
+in the category of Data Quality Monitoring (DQM) require more resources than are available within
+the DAQ footprint, and include jobs that take substantially longer time than processes run in the
+Online Monitor. That could present a resource and data management problem for the DAQ.
+The Online Monitor is a real time system
+and not well suited for long term preservation and cataloging of the data produced, such as plots,
+histograms, tables etc as this would substantially complicate the system.
+
+A separate consideration is the necessity to insulate DAQ from
+potential disruptions due to frequent software updates of the DQM software dictated by
+the dynamic nature of the test beam experiment. 
 For these reasons a separate ``\pd Prompt Processing System'' (abbreviated as \textbf{p3s}) was put
 in place \cite{eps} with the following characteristics:
 \begin{itemize} 
 
+\item turnaround time on the scale of minutes (and in some cases tens of minutes)
+
 \item lower bandwidth as compared to the Online Monitor (i.e. a small fraction of events is processed,
 but in more detail)
 
-\item extensive and scalable computing resources relying on the CERN batch facility
+\item extensive and scalable computing resources provided on the CERN batch facility
 
-\item reading data from disk, with no direct coupling to the DAQ system
+\item reading data from files committed to CERN central storage, with no direct coupling to the DAQ system
 
 \item flexibility in introducing, modifying and configuring software without any risk of disruption of
 critical DAQ functionality
@@ -96,19 +108,21 @@ the DQM results in an efficient manner
 
 \end{itemize}
 
-\begin{figure}[tb]
-\centering\includegraphics[width=1.0\textwidth]{figures/np02np04.png}
-\caption{\label{fig:np02np04}Diagram of the layout of the CERN north area with
-  location of the protoDUNE dual phase detector (center) and the single
-  phase detector (right). The direction of the particle beam is from left to right.}
-\end{figure}
+%\begin{figure}[tb]
+%\centering\includegraphics[width=1.0\textwidth]{figures/np02np04.png}
+%\caption{\label{fig:np02np04}Diagram of the layout of the CERN north area with
+ % location of the protoDUNE dual phase detector (center) and the single
+  %phase detector (right). The direction of the particle beam is from left to right.}
+%\end{figure}
 
 \section{The protoDUNE-SP Data}
 \subsection{Raw Data Parameters}
 \label{sec:np04_data_rate}
 
 The detector features the ``cold electronics'' design in which the amplifiers and digitizers
-are placed within the cryostat and operate at cryogenic temperatures.
+are placed within the cryostat and operate at cryogenic temperatures. There are
+``Warm Interface Boards'' located outside of the cryostat which concentrate data
+and transmit it to the DAQ systems via an optic fiber.
 % Digital signals are fed to the Warm Interface Boards located outside of the cryostat on its top surface and then
 % transmitted to the Data Acquisition System via a fiber optic line.
 There are 15,360 channels read out at the 2\,MHz digitization frequency. The size of the data
@@ -122,7 +136,7 @@ Once the raw data are captured by the Data Acquisition System and written to the
 located in the experimental hall  they are picked up by an instance of the \textit{Fermi FTS} system
 \cite{sam,fts} which manages the transfer to the CERN distributed storage system (EOS).
 
-EOS serves as the principal staging area from which the data get copied to tape storage and
+EOS serves as the principal staging area  \cite{eos_role} from which the data get copied to tape storage and
 are also transmitted to FNAL for offline processing by a separate instance of \textit{Fermi FTS}.
 Importantly, EOS also serves to stage the input data for the prompt processing system and to
 store and preserve the DQM output i.e. the various data products produced by DQM jobs. This design
@@ -149,8 +163,8 @@ The following types of applications are included in the \pd DQM suite:
 \item Estimation of signal-to-noise ratio
 \end{itemize}
 
-For a few of these metrics the system produces time-series plots in addition to the tabulated data.
-The DQM jobs running in the system are often called \textit{payload jobs} so as to distinguish
+\noindent For a few of these metrics the system produces time-series plots in addition to the tabulated data.
+The DQM applications are often called \textit{payload jobs} so as to distinguish
 them to service and infrastructure jobs which exist to support the function of the overall system.
 
 
@@ -162,7 +176,7 @@ experiments which implement ``express streams'' to perform preliminary calculati
 after it leaves the DAQ.
 
 The \textit{\pd Prompt Processing System} (p3s) allows the experiment to benefit from combination of high capacity, high
-performance distributed storage (CERN EOS), networking resources and the CERN Tier-0 computing facility.
+performance distributed storage (CERN EOS), CERN networking resources and the CERN Tier-0 computing facility.
 By utilizing the pilot-based approach to workload management which is the cornerstone of such well-known
 systems as PanDA and DIRAC \cite{panda,dirac} p3s achieves low latency of automated job submission
 as compared to running jobs directly on the batch trsource (which is currently HTCondor at CERN Tier-0).
@@ -274,6 +288,10 @@ doi:10.1088/1742-6596/513/3/032045
 \bibitem{fts}
 A. Norman \emph{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
 
+\bibitem{eos_role}
+S. Fuess et al. \emph{Design of the protoDUNE raw data management
+infrastructure.~J. Phys.: Conf. Series.} Vol.\textbf{898}. IOP Publishing, 2017,
+doi:10.1088/1742-6596/898/6/062036
 
 %\bibitem{xrootd}
 %L. Bauerdick et al. \emph{Using Xrootd to Federate Regional Storage.~J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012,
