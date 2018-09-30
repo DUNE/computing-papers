@@ -55,6 +55,7 @@ the principal element of the DUNE apparatus to be constructed at the Sanford Und
 Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
 in the CERN North Experimental Hall and tested utilizing a dedicated beam line from the CERN SPS
 accelerator complex. The run plan also includes a large number of cosmic ray triggers.
+Commisioning of the detector took place in September of 2018.
 %The layout of the experimental area is shown in Fig.\,\ref{fig:np02np04}, with the single-phase
 %detector seen as a cubic structure (the cryostat) on the right-hand side of the diagram. 
 
@@ -75,9 +76,9 @@ shows the view of the top of the cryostat with elements of the readout hardware.
 There is a dedicated 20 Gb/s network connection from the experiment to the CERN central storage facilities.
 
 The \pd-SP Data Acquisition is equipped with a capable Online Monitoring System which receives data via
-the network and does processing in real time. However, certain types of processing e.g. application of
-digital filtering techniques to reduce noise present in the waveforms read out from the detector
-in the category of Data Quality Monitoring (DQM) require more resources than are available within
+the network and does processing in real time. However, certain types of processing e.g.\,application of
+digital filtering to the TPC channels, counting hit candidates etc which belong to the
+category of Data Quality Monitoring (DQM) require more resources than are available within
 the DAQ footprint, and include jobs that take substantially longer time than processes run in the
 Online Monitor. That could present a resource and data management problem for the DAQ.
 The Online Monitor is a real time system
@@ -152,9 +153,10 @@ is of the scale of a few minutes and is considered acceptable in the context of 
 
 \section{Data Quality Monitoring and Prompt Processing}
 \subsection{DQM Applications}
-The following types of applications are included in the \pd DQM suite:
+The following types of applications were included in the \pd DQM suite during the detector
+commissioning:
 \begin{itemize}
-\item Continuous monitoring of certain elements of electronics in the the readout chain
+\item Monitoring of front-end motherboards
 \item LArTPC signal processing (noise reduction, deconvolution)
 \item Basic event visualization in 2D
 \item Initial data preparation for an advanced 3D event display running on a separate system
@@ -170,44 +172,49 @@ them to service and infrastructure jobs which exist to support the function of t
 
 \subsection{Design of the Prompt Processing System}
 
-Computing resources for the Data Quality Monitoring in \pd-SP are managed by its prompt processing system
-which is separate from both the DAQ and the main production system. This is similar to many High-Energy Physics
+Computing resources for the Data Quality Monitoring in \pd-SP are managed by
+the  \textit{\pd Prompt Processing System} (the ``p3s'')
+which is separate from both the DAQ and the main production system. This is similar to some High-Energy Physics
 experiments which implement ``express streams'' to perform preliminary calculations on the data very soon
 after it leaves the DAQ.
 
-The \textit{\pd Prompt Processing System} (p3s) allows the experiment to benefit from combination of high capacity, high
-performance distributed storage (CERN EOS), CERN networking resources and the CERN Tier-0 computing facility.
-By utilizing the pilot-based approach to workload management which is the cornerstone of such well-known
+The  p3s allows the experiment to benefit from combination of high capacity, high
+performance distributed storage (CERN EOS), CERN networking resources and its Tier-0 computing facility.
+By utilizing the pilot-based approach \cite{eps} to workload management which is the cornerstone of such well-known
 systems as PanDA and DIRAC \cite{panda,dirac} p3s achieves low latency of automated job submission
 as compared to running jobs directly on the batch trsource (which is currently HTCondor at CERN Tier-0).
-In addition, in combination with a Web service (and its back-end database) this approach provides excellent
-monitoring capabilities. There are two pricipal components in the prompt processing system - a single instance
-of the p3s server and multiple pilots running on distributed resources.
+In addition, since it combines a Web service and a back-end database this approach provides excellent
+monitoring capabilities.
 
-Pilot jobs (sometimes called \textit{agents}) as submitted to worker nodes which may be
-a part of a Grid site or a local batch system. Subsequently, each pilot sends a HTTP request to the p3s server
-to register and to try to obtain a description of a job that needs to be executed.
-Jobs descriptions exist as records in the p3s database as entries created independently from pilots by
-external clients (automatic or actuated by the user). The server matches a job records with a pilot and
-replies to its HTTP request with a message containing all necessary information needed for job
-execution (e.g. the path to the executable and the configuration file, additional environment variables etc).
-The pilot parses the message and initiates the job  execution. Once the job completes, the pilot repeats the cycle
-by sending anothe request to the server. The pilots are configured on the batch system to persist for a period
-of time much larger than typical execution time of the payload  jobs so the batch slot is already primed and the next
-job starts very quickly.
+% There are two pricipal components in the prompt processing system - a single instance
+% of the p3s server and multiple pilots running on distributed resources.
+
+%Pilot jobs (sometimes called \textit{agents}) as submitted to worker nodes which may be
+%a part of a Grid site or a local batch system. Subsequently, each pilot sends a HTTP request to the p3s server
+%to register and to try to obtain a description of a job that needs to be executed.
+%Jobs descriptions exist as records in the p3s database as entries created independently from pilots by
+%external clients (automatic or actuated by the user). The server matches a job records with a pilot and
+%replies to its HTTP request with a message containing all necessary information needed for job
+%execution (e.g. the path to the executable and the configuration file, additional environment variables etc).
+%The pilot parses the message and initiates the job  execution. Once the job completes, the pilot repeats the cycle
+%by sending anothe request to the server. The pilots are configured on the batch system to persist for a period
+%of time much larger than typical execution time of the payload  jobs so the batch slot is already primed and the next
+%job starts very quickly.
 
 \subsection{Design of the DQM content service}
-The results produced by the payload jobs managed by p3s can only be useful is there is an efficient
-interface for the users to access those. Such interface is optimally implemented
-as a Web service accessible through a Web browser and a few CLI utilities. Combination of
-functionality across the p3s and DQM content servers is not optimal since the workload
-management component (p3s) needs to maintain high availability and the extra load created
-by content requests has to be avoided. Content can be stored in the system in two ways:
+The results produced by the payload jobs managed by p3s can only be useful if there is an
+efficient interface for the users to access these derived data. Such interface is provided in \pd-SP
+by a Web service accessible through a Web browser and a few CLI utilities.
+% Combination of
+%functionality  p3s and DQM content servers in a single service is not the best solution since
+%the workload management component (p3s) needs to maintain high availability and the extra
+%load created by content requests has to be avoided.
+The DQM output (the ``content'') can be stored in the system in two ways:
 \begin{itemize}
 
-\item When the basic unit of data that needs to be stored is a file (such as an image in the PNG format) such
-file is stored on disk (EOS), but it's location is recorded in a database so it can be later retrieved
-and access through a dynamically generated Web page, perhaps based on some selection criteria
+\item When the basic unit of data that needs to be stored is a file e.g.\,an image in the PNG format such
+file is stored on disk (EOS) and its location is recorded in a database so it can be later retrieved
+and accessed through a dynamically generated Web page,  based on some selection criteria
 
 \item When the basic unit of data is an array of numbers these are for the most part stored directly
 in the database and are used in dynamically generated Web pages either in tabulated format or
@@ -218,21 +225,32 @@ to generate graphs by using Javascript
 
 
 \section{Technologies and Interfaces}
+\subsection{Web Services}
 
-The client-server architecture is used. The p3s server is implemented as a Django \cite{django} application
-with standard components such as Apache Web server and PostgreSQL RDBMS as the backend storage
-(a few other RDBMS can be used as well). All interactions with the server
-are conducted via HTTP. The server provides monitoring capabilities by allowing the user to browse and navigate
+Both p3s and the DQM content server ares implemented as Django \cite{django} applications
+with standard components such as the Apache Web server and PostgreSQL RDBMS as the backend storage
+(a few other RDBMS can be used as well). All interactions with either service
+are conducted via HTTP.
+
+The p3s server is responsible for workload management by matching the pilots to the job requests,
+and also provides monitoring capabilities by allowing the user to browse and navigate
 tabulated data describing the state of the various objects in the system (e.g. pilots, jobs, data files etc).
-The design of monitoring pages leverages the well known ``django-tables2'' package which results
-in a very small amout of application code.
+The design of monitoring pages leverages the well known \textit{``django-tables2''} package which results
+in a very small amout of application code. An example of monitoring pages served by p3s is
+presented in Fig.\,\ref{fig:p3s_dash}.
 
-A suite of CLI clients is provided for managing pilots, jobs and
-other components. In case interaction with the server requires exhange of messages these are
-formatted as JSON. Workflows (DAGs) can be described in a standard format (GraphML) which is parsed
-using the popular NetworkX Python module, again minimizing the application code.
+\begin{figure}[tb]
+\centering\includegraphics[width=1.0\textwidth]{figures/p3s_dash_2018_v1.png}
+\caption{\label{fig:p3s_dash}The p3s dashboard}
+\end{figure}
 
+ A suite of CLI clients is provided as a component of p3s for managing pilots, jobs and
+other entities. In case interaction with the server requires exhange of messages these are
+formatted as JSON. 
 
+\subsection{Interaction between p3s and the Content Server: the self-describing data}
+Due to highly dynamic nature of application development in the context of the \pd beam
+test it
 
 %For tables use syntax in table~\ref{tab-1}.
 %\begin{table}
