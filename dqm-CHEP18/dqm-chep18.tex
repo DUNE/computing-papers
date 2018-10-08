@@ -97,8 +97,8 @@ in place \cite{eps} with the following characteristics:
 
 \item turnaround time on the scale of minutes (and in some cases tens of minutes)
 
-\item lower bandwidth as compared to the Online Monitor (i.e. a small fraction of events is processed,
-but in more detail)
+\item lower bandwidth as compared to the Online Monitor (i.e.\,a small fraction of events is processed,
+but in more detail and with a variety of methods)
 
 \item extensive and scalable computing resources provided on the CERN batch facility
 
@@ -167,7 +167,7 @@ commissioning:
 \begin{itemize}
 \item Monitoring of front-end motherboards
 \item LArTPC signal processing (noise reduction, deconvolution)
-\item Basic event visualization in 2D
+\item Basic event visualization in 2D projections
 \item Initial data preparation for an advanced 3D event display running on a separate system
 \item Liquid Argon purity monitoring using cosmic $\mu$ tracks
 \item Estimation of the number of hits and charge collected in each section of the LArTPC, RMS of these values
@@ -238,9 +238,9 @@ to generate graphs by using Javascript.
 \section{Technologies and Interfaces}
 \subsection{Web Services}
 
-Both p3s and the DQM content server ares implemented as Django \cite{django} applications
-written in Python
-with standard components such as the Apache Web server and PostgreSQL RDBMS as the backend storage
+Both the p3s server and the DQM content server ares implemented as Django
+\cite{django} applications written in Python with standard components such
+as the Apache Web server and PostgreSQL RDBMS as the backend storage
 (a few other RDBMS can be used as well). All interactions with either service
 are conducted via HTTP either from a Web browser or one of the included CLI utilities.
 While the p3s instance deployed for \pd-SP is configured to use
@@ -269,17 +269,13 @@ There is a centralized log of critical system messages stored in the p3s databas
 is used to troubleshoot the system. It is also used to automatically generate alarms
 for the operators should certain parameters fall out of their nominal range.
 
-The p3s design also supports workflows described as Directed Acyclical Graphs (DAGs)
-however in the current run of the experiment this functionality was not used.
-
 \subsection{The Content Server Interface: the Self-Describing Data}
 Due to highly dynamic nature of application development in the context of the \pd beam
 test it is not practical to create static menus, links or make many assumptions about
-the categories and content of plots and other data products coming out of the DQM.
-Any such information or logic included in the server in a static manner would result
-in frequent and time-consuming updates of the server code.
-
-Instead, each DQM application is expected to produce two or more files in accordance
+the categories and content of plots and other data products coming out of the DQM
+application. Any such information or logic included in the server code in a static manner
+would result in frequent and time-consuming updates of the server code. Instead,
+each DQM application is expected to produce two or more files in accordance
 with simple JSON schemas. One file is referred to as ``summary'' and it contains basic
 information about the attributes of the raw data file used as input, such the run number
 and a few other indices. This file is stored as a JSON string in the back-end database
@@ -287,8 +283,8 @@ of the DQM server. It may also optionally contain a number of summary metrics
 that are then parsed by the page-generating logic of the server and presented
 in the DQM tables.
 
-The second JSON file (or a group of files) referred to as ``description'' or ``file list'' provides references to
-plots produced in formats such as PNG, as well as description of ``categories''
+The second JSON file (or a group of files) referred to as ``description'' or ``file list'' provides
+references to plots produced in formats such as PNG, as well as description of ``categories''
 and sub-categories which are automatically translated by the server into
 groups of menus with links necessary to access these plots on the dynamically generated
 Web pages. An example of such menus is presented in Fig.\,\ref{fig:tpc_monitor}.
@@ -297,13 +293,13 @@ and data into the DQM content service, with minimal or no changes to the
 server code.
 
 \begin{figure}[tb]
-\centering\includegraphics[width=1.0\textwidth]{figures/tpc_monitor_2018_v1.png}
+\centering\includegraphics[width=1.0\textwidth]{figures/tpc_monitor_2018_v2.png}
 \caption{\label{fig:tpc_monitor}An example of dynamically generated DQM menus and links}
 \end{figure}
 
 
 \begin{figure}[tb]
-\centering\includegraphics[width=1.0\textwidth]{figures/purity_chart_2018_v1.png}
+\centering\includegraphics[width=1.0\textwidth]{figures/purity_chart_2018_v2.png}
 \caption{\label{fig:purity_chart}An example of dynamically generated time series plot in DQM.}
 \end{figure}
 
@@ -316,14 +312,13 @@ of the DQM database.
 \subsection{Deployment}
 
 The code of p3s and the DQM content server is version-controlled using \textit{git}
-and GitHub. Code updates are done by priviledged users by updating the code
-on the servers from the repository and subsequent service restart.
+and GitHub.
 
-The p3s and DQM services as well as their back-end database servers have been deployed on
-virtual machines within the CERN OpenStack cloud. Processes that need to be run periodically,
-i.e. refreshing the p3s pilot job population, automatic DQM job generation based on detection
+The p3s and DQM services as well as their back-end database server have been deployed on
+virtual machines of the CERN OpenStack cloud. Processes that need to be run periodically,
+i.e.\,refreshing the p3s pilot job population, automatic DQM job generation based on detection
 of fresh raw data written to EOS etc are maintained using \textit{``acrontab''} which is a kerberized
-distributed version of crontab used at the \textit{lxplus} interactive Linux facility CERN.
+distributed version of \textit{crontab} used at the ``lxplus'' interactive Linux facility CERN.
 
 \section{Conclusions}
 
