@@ -100,7 +100,7 @@ in place \cite{eps} with the following characteristics:
 \item lower bandwidth as compared to the Online Monitor (i.e.\,a small fraction of events is processed,
 but in more detail and with a variety of methods)
 
-\item extensive and scalable computing resources provided on the CERN batch facility
+\item extensive and scalable computing resources provided by the CERN batch facility
 
 \item reading data from files committed to CERN central storage, with no direct coupling to the DAQ system
 
@@ -312,9 +312,7 @@ of the DQM database.
 \subsection{Deployment}
 
 The code of p3s and the DQM content server is version-controlled using \textit{git}
-and GitHub.
-
-The p3s and DQM services as well as their back-end database server have been deployed on
+and GitHub. The p3s and DQM Web services as well as their back-end database server have been deployed on
 virtual machines of the CERN OpenStack cloud. Processes that need to be run periodically,
 i.e.\,refreshing the p3s pilot job population, automatic DQM job generation based on detection
 of fresh raw data written to EOS etc are maintained using \textit{``acrontab''} which is a kerberized
@@ -326,10 +324,10 @@ The \pd-SP experiment which started operation at CERN in 2018 requires adequate 
 Quality Monitoring. To meet these requirements the DUNE Collaboration has developed
 and deployed Web services which manage the execution of the DQM jobs on the CERN
 facilities and dynamic handling of the DQM data content with efficient user interfaces.
-Emphasis was made on using existing and proven technologies such as Django
-for the Web applicaiton framework, the concept of utilizing pilot jobs for
-efficient workload distribution and a number of others. The \pd-SP prompt
-processing and DQM software which it supports were successfully used during
+The design was based on existing and proven technologies such as Django
+for the Web applicaiton framework,  pilot jobs for efficient interface to
+the batch system, standard  JavaScript libraries and a number of others. The DQM software
+running on the \pd-SP prompt processing system was  successfully used during
 the commissioning phase of the experiment and will remain an imporant part
 of its ongoing operation.
 
