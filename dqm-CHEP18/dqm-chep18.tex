@@ -27,7 +27,7 @@
 
 
 \author{ 
-\lastname{Maxim Potekhin}\inst{1}\fnsep\thanks{\email{potekhin@bnl.gov}}, \it{on behalf of the DUNE Collaboration}
+\lastname{\textit{Maxim} Potekhin}\inst{1}\fnsep\thanks{\email{potekhin@bnl.gov}}, \it{on behalf of the DUNE Collaboration}
 }
 
 \institute{Brookhaven National Laboratory, Upton, NY11973, USA}
@@ -65,7 +65,7 @@ The \pd-SP experiment is designed to study a large-scale prototype of the single
 the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one of
 the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
 Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
-in the CERN North Experimental Hall and tested utilizing a dedicated beam line from the CERN SPS
+in the CERN North Experimental Hall and is tested utilizing a dedicated beam line from the CERN SPS
 accelerator complex. The run plan also includes a large number of cosmic ray triggers.
 Commisioning of the detector took place in September of 2018.
 %The layout of the experimental area is shown in Figure \ref{fig:np02np04}, with the single-phase
@@ -89,13 +89,13 @@ There is a dedicated 20 Gb/s network connection from the experiment to the CERN 
 
 The \pd-SP Data Acquisition (DAQ) is equipped with a capable online monitoring system
 which receives data via the network and does processing in real time.
-However, certain types of processing e.g.\,application of digital filtering to the TPC channels, counting hit candidates etc which belong to the
-category of Data Quality Monitoring (DQM) require more resources than are available within
+However, certain types of processing, e.g.\,application of digital filtering to the TPC channels, counting hit candidates \textit{etc.}\,which belong to the
+category of Data Quality Monitoring (DQM), require more resources than are available within
 the DAQ footprint, and include jobs that take substantially longer time than processes run in the
 online monitor. That could present a resource and data management problem for the DAQ.
-The Online Monitor is a real time system
-and not well suited for long term preservation and cataloging of the data produced, such as plots,
-histograms, tables etc as this would substantially complicate the system.
+The online monitor is a real-time system and is not well suited for long term preservation and
+cataloging of the data produced, such as plots, histograms, tables \textit{etc.}\,as this would
+substantially complicate the system.
 
 A separate consideration is the necessity to insulate DAQ from
 potential disruptions due to frequent software updates of the DQM software dictated by
@@ -106,7 +106,7 @@ in place  with the following characteristics \cite{eps}:
 
 \item turnaround time on the scale of minutes (and in some cases tens of minutes)
 
-\item lower bandwidth as compared to the Online Monitor (i.e.\,a small fraction of events is processed,
+\item lower bandwidth compared to the online monitor (\textit{i.e.}\,a small fraction of events is processed,
 but in more detail and with a variety of methods)
 
 \item extensive and scalable computing resources provided by the CERN batch facility
@@ -182,8 +182,8 @@ commissioning:
 \end{itemize}
 
 \noindent For a few of these metrics the system produces time-series plots in addition to the tabulated data.
-The DQM applications are often called \textit{payload jobs} so as to distinguish
-them to service and infrastructure jobs which exist to support the function of the overall system.
+The DQM applications are often called \textit{payload jobs} so as to distinguish them from service and
+infrastructure jobs which exist to support the function of the overall system.
 
 
 \subsection{Design of the Prompt Processing System}
@@ -197,39 +197,21 @@ after it leaves the DAQ.
 
 The  p3s allows the experiment to benefit from combination of high capacity, high
 performance distributed storage (CERN EOS), CERN networking resources and its Tier-0 computing facility.
-By utilizing the pilot-based approach \cite{eps} to workload management which is the cornerstone of such well-known
+By utilizing the pilot-based approach \cite{eps} to workload management, which is the cornerstone of such well-known
 systems as PanDA and DIRAC \cite{panda,dirac}, p3s achieves low latency of automated job submission
-as compared to running jobs directly on the batch trsource (which is currently HTCondor at CERN Tier-0).
+compared to running jobs directly on the batch resource (which is currently HTCondor at CERN Tier-0).
 In addition, since it combines a web service and a back-end database this approach provides excellent
 job monitoring capabilities.
 
-% There are two pricipal components in the prompt processing system - a single instance
-% of the p3s server and multiple pilots running on distributed resources.
-
-%Pilot jobs (sometimes called \textit{agents}) as submitted to worker nodes which may be
-%a part of a Grid site or a local batch system. Subsequently, each pilot sends a HTTP request to the p3s server
-%to register and to try to obtain a description of a job that needs to be executed.
-%Jobs descriptions exist as records in the p3s database as entries created independently from pilots by
-%external clients (automatic or actuated by the user). The server matches a job records with a pilot and
-%replies to its HTTP request with a message containing all necessary information needed for job
-%execution (e.g. the path to the executable and the configuration file, additional environment variables etc).
-%The pilot parses the message and initiates the job  execution. Once the job completes, the pilot repeats the cycle
-%by sending anothe request to the server. The pilots are configured on the batch system to persist for a period
-%of time much larger than typical execution time of the payload  jobs so the batch slot is already primed and the next
-%job starts very quickly.
 
 \subsection{Design of the DQM Content Service}
 The results produced by the payload jobs managed by p3s can only be useful if there is an
 efficient interface for the users to access these derived data. Such interface is provided in \pd-SP
-by a web service accessible through a web browser and a few CLI utilities.
-% Combination of
-%functionality  p3s and DQM content servers in a single service is not the best solution since
-%the workload management component (p3s) needs to maintain high availability and the extra
-%load created by content requests has to be avoided.
+by a web service accessible through a web browser and a few \textit{CLI} (command line interface) utilities.
 The DQM output (the ``content'') can be stored in the system in two ways:
 \begin{itemize}
 
-\item when the basic unit of data that needs to be stored is a file e.g.\,an image in the PNG format such
+\item when the basic unit of data that needs to be stored is a file, e.g.\,an image in the PNG format, such
 file is stored on disk (EOS) and its location is recorded in a database so it can be later retrieved
 and accessed through a dynamically generated web page,  based on some selection criteria; 
 this is simplified by the fact that the EOS storage is directly accessible from the Apache server
@@ -246,11 +228,11 @@ to generate graphs by using JavaScript
 \section{Technologies and Interfaces}
 \subsection{Web Services}
 
-Both the p3s server and the DQM content server ares implemented as Django
+Both the p3s server and the DQM content server are implemented as Django
 \cite{django} applications written in Python with standard components such
-as the Apache web server and PostgreSQL RDBMS as the backend storage
+as the Apache web server and PostgreSQL RDBMS as the back-end storage
 (a few other RDBMS can be used as well). All interactions with either service
-are conducted via HTTP either from a web browser or one of the included CLI utilities.
+are conducted via HTTP either from a web browser or one of the included \textit{CLI} utilities.
 While the p3s instance deployed for \pd-SP is configured to use
 the resources provided by CERN the system itself is platform-agnostic in the sense that
 it can manage the resources of any cluster or group of worker nodes and in fact has
@@ -258,7 +240,7 @@ been succesfully tested in these scenarios as well.
 
 The p3s server is responsible for workload management by matching available pilots to the job requests,
 and also provides monitoring capabilities by allowing the user to browse and navigate
-tabulated data describing the state of the various objects in the system (e.g. pilots, jobs, data files etc).
+tabulated data describing the state of the various objects in the system (e.g. pilots, jobs, data files \textit{etc.}).
 The design of the monitoring pages leverages the Django web page template functionality and
 the well known \textit{django-tables2} package which results
 in a very small amout of application code. An example of pages served by p3s is
@@ -286,7 +268,7 @@ application. Any such information or logic included in the server code in a stat
 would result in frequent and time-consuming updates of the server code. Instead,
 each DQM application is expected to produce two or more files in accordance
 with simple JSON schemas. One file is referred to as \textit{summary} and it contains basic
-information about the attributes of the raw data file used as input, such the run number
+information about the attributes of the raw data file used as input, such as the run number
 and a few other indices. This file is stored as a JSON string in the back-end database
 of the DQM server. It may also optionally contain a number of summary metrics
 that are then parsed by the page-generating logic of the server and presented
@@ -304,9 +286,10 @@ server code.
 \begin{figure}[tb]
 \centering\includegraphics[width=1.0\textwidth]{figures/tpc_monitor_2018_v2.png}
 \caption{\label{fig:tpc_monitor}An example of dynamically generated DQM menus and links. Each link leads to
-a page populated with plots generated by DQM jobs.}
+a page populated with a specific category of plots produced by DQM jobs. Modifying the menus does not require
+any changes in the server code as it is managed by the metadata produced by the application, which can be changed,
+added or removed at will by the developers.}
 \end{figure}
-
 
 \begin{figure}[tb]
 \centering\includegraphics[width=1.0\textwidth]{figures/purity_chart_2018_v2.png}
@@ -325,8 +308,8 @@ of the DQM database.
 The code of p3s and the DQM content server is version-controlled using \textit{git}
 and GitHub. The p3s and DQM web services as well as their back-end database server have been deployed on
 virtual machines of the CERN OpenStack cloud. Processes that need to be run periodically,
-i.e.\,refreshing the p3s pilot job population, automatic DQM job generation based on detection
-of fresh raw data written to EOS etc are maintained using \textit{acrontab} which is a kerberized
+\textit{i.e.}\,refreshing the p3s pilot job population, automatic DQM job generation based on detection
+of fresh raw data written to EOS \textit{etc.}\,are maintained using \textit{acrontab} which is a kerberized
 distributed version of crontab used at the \textit{lxplus} interactive Linux facility at CERN.
 
 The system was tested in two data challenges preceding the data taking period, running
