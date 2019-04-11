@@ -1,2 +1,3 @@
-# computing-papers
-A collection of DUNE papers related to computing and computational techniques
+# DUNE computing papers
+A collection of conference proceceddings and contributions related to DUNE computing
+
