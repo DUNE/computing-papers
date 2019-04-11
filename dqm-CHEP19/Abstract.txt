@@ -1,0 +1,21 @@
+Title:
+Evolution of the Data Quality Monitoring and Prompt Processing System
+in the protoDUNE-SP experiment
+
+The DUNE Collaboration has successfully implemented and currently operates
+an experimental program based at CERN which includes a beam test and an extended
+cosmic ray run of two large-scale prototypes of the DUNE Far Detector.
+The volume of data already collected by the protoDUNE-SP (the single-phase
+Liquid Argon TPC prototype) amounts to approximately 3PB and the sustained rate
+of data sent to mass storage is of the order of O(100) MB/s. In addition to this
+data being committed to mass storage and processed in the Grid environment a small
+fraction of it is captured by the Prompt Processing System which is optimized for
+continuous low-latency calculation of the vital detector metrics and parameters
+as well as the output rendered as event display images. This system is the platform
+for Data Quality Monitoring in protoDUNE-SP and has served a crucial role starting
+from the commissioning of the apparatus and throughout its operation in 2018-2019,
+which continues at the time of writing. We present our experience in operating the
+system in the CERN environment, as well as work currently underway to make the system
+more scalable, resilient and to simplify system recovery procedures in preparation
+for the second run of protoDUNE-SP foreseen after the Long Shutdown of the LHC
+in the Fall of 2019. 
