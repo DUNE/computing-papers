@@ -10,19 +10,21 @@
 
 \title{A brief Review of the Requirements for the Hardware/Construction Database Systems in DUNE}
 \date{\today}
-\author{M.\,Potekhin}
+\author{M.\,Potekhin, B.\,Viren}
 
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-\noindent  Due to its complexity DUNE requires systems to aid in control, accounting and management
-in the area of manufacuring, QC, logistics and installation. These systems involve databases which
-are include hardware/QC/construction/installation DBs , Parts Breakdown Structure and others.
-The challenge is to ensure proper interconnectivity and interoperability of these databases with
-others such as calibration, slow controls etc which is necessary for commissioning and continued
-operations.
+\noindent  Due to its complexity DUNE requires systems and tools for control, accounting and
+management in the area of manufacuring, QC, logistics and installation. These systems will
+involve databases which include hardware/QC/construction/installation DBs,
+``Parts Breakdown Structure`` and others. The challenge is to ensure proper
+interconnectivity and interoperability of these databases with others such as calibration,
+slow controls etc which is necessary for commissioning and continued
+operations. We consider minimal reasonable requirements to the design of the databases
+and their interfaces. Technology downselect is outside of the scope of this document.
 
 \end{abstract}
 
@@ -30,7 +32,32 @@ operations.
 
 \section{Overview}
 
-overview
+The most recent experience in DUNE with systems of this kind comes from the protoDUNE-SP experiment.
+The experiment employed hardware/QC databases which were distinct in both
+design and implementation for each major element of construction and installation. For example, the CE QC
+systems were designed specifically for purposes of testing and quality control of the Cold Electronics,
+and were distinct from databases used in manufacturing of the FEMB, APAs/CPAs, cabling database etc.
+
+The DUNE experiment represents a completely different scale in terms of the component count and
+overall complexity
+
+\section{Assumptions}
+
+Consider the following assumptions:
+
+\begin{itemize}
+
+\item Every hardware component used in DUNE needs to be described in the
+system and accompanied by information with content and level of detail necessary to ensure
+successful manufacture, QC, delivery, assembly, installation, commissioning and operation and maintenance of
+DUNE
+
+\item Likewise, associations of the components need to be described in the system
+in ways specific to each situation; ``association'' may mean either aggregation of components
+in a hierarchical manner e.g.\,electronic installed on a FEMB, or in terms of point-to-point connections
+
+\end{itemize}
+
 
 
 
