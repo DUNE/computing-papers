@@ -24,7 +24,8 @@ will involve databases which include hardware/QC/construction/installation DBs,
 interconnectivity and interoperability of these databases with others such as calibration,
 slow controls etc which is necessary for commissioning and continued
 operations. We consider minimal reasonable requirements to the design of the databases
-and their interfaces. Technology downselect is outside of the scope of this document.
+and their interfaces. Actual design and technology downselect are outside of the scope of
+this document.
 
 \end{abstract}
 
@@ -38,13 +39,14 @@ design and implementation for each major element of construction and installatio
 systems were designed specifically for purposes of testing and quality control of the Cold Electronics,
 and were distinct from databases used in manufacturing of the FEMB, APAs/CPAs, cabling database etc.
 The DUNE experiment represents a vastly larger scale in terms of the component count and
-overall complexity and will require well-coordinated design of such databases. For that reasons,
+overall complexity and will require well-coordinated design of such databases. For these reasons,
 it is necessary to define a base set of requirements and design criteria in this work area.
 
-\section{Basic Assumptions}
+\section{Basic Requirements}
 \subsection{Components and Associations}
 
-Consider the following basic assumptions regarding information about components and their relationships:
+In the following, we 
+Consider the following basic requirements regarding information about components and their relationships:
 
 \begin{itemize}
 
@@ -60,10 +62,10 @@ point-to-point connections between components or subsystems
 
 \end{itemize}
 
-\noindent Now let us consider these assumptions in more detail.
+\noindent Now let us consider these requirements in more detail.
 
 \subsection{Components}
-Assumptions:
+In further detailing the requirements, we make the following assumptions:
 
 \begin{itemize}
 
@@ -82,6 +84,24 @@ responsible for changing the record (a person and/or institution)
 
 \end{itemize}
 
+\subsection{Associations}
+In further detailing the requirements, we make the following assumptions::
+
+\begin{itemize}
+
+\item Each component can be included in a number of associations, perhaps of different kinds; a bundle of cables
+can be a part of an assembly while also representing connections between sub-assemblies
+
+\item The exact sequence of transitions depends on the exact nature of the specific  component
+
+\item Each state transition may optionally result in a data product specific to the component and the specific transition;
+one example is metrics collected during the QC procedures for CE; the exact nature, size and format of data thus produced
+depends on the specific component and transition
+
+\item Each state transition may optionally require a record in the audit trail, i.e.\,reason for the event and the entity
+responsible for changing the record (a person and/or institution)
+
+\end{itemize}
 
 
 \clearpage
