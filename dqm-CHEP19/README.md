@@ -1,3 +1,6 @@
 # Thanks for visiting this page
 
-Please read the abstract and send your comments to Maxim (potekhin@bnl.gov). Your comments, suggestions and support will be greatly appreciated!
+The abstract has been accepted as a poster presentation at CHEP 2019.
+The poster PGF has now been created.
+Please send your comments to Maxim (potekhin@bnl.gov).
+
