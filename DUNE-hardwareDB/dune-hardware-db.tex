@@ -8,24 +8,26 @@
 \usepackage[pdftex,pdfpagelabels,bookmarks,hyperindex,hyperfigures]{hyperref}
 
 
-\title{A Brief Review of the Requirements for the Hardware/Construction Database Systems in DUNE}
+\title{Basic Requirements for the Hardware/Construction Database Systems in DUNE}
 \date{\today}
-\author{M.\,Potekhin, B.\,Viren}
+\author{D.\,Arkhipkin, M.\,Potekhin, B.\,Viren}
 
 
 \begin{document}
 \maketitle
 
 \begin{abstract}
-\noindent  Due to its complexity DUNE requires systems and tools for control, accounting and
-management in the area of manufacturing, QC, logistics, installation and maintenance. These systems
-will involve databases which include hardware/QC/construction/installation DBs,
-``Parts Breakdown Structure`` and others. The challenge is to ensure proper
-interconnectivity and interoperability of these databases with others such as calibration,
-slow controls etc which is necessary for commissioning and continued
-operations. We consider minimal reasonable requirements to the design of the databases
-and their interfaces. Actual design and technology downselect are outside of the scope of
-this document.
+\noindent  The DUNE experiment requires systems and tools for management, control
+and accounting  in the areas of manufacturing, QC, logistics, installation and maintenance.
+These systems will include hardware/QC/construction/installation and other databases.
+It is important to ensure proper integration, interconnectivity and interoperability of these
+databases  as well as interfaces to other systems such as calibration, slow controls etc.
+It is also important to make it possible to describe the evolution of various hardware modules
+in time in terms of their composition (e.g. circuits replaced) and potentially structure.
+We consider basic requirements to the databases and their interfaces  in the context
+presented above, as well as basic implication for their design.
+
+%Actual design and technology downselect are outside of the scope of this document.
 
 \end{abstract}
 
@@ -33,32 +35,40 @@ this document.
 
 \section{Overview}
 
-The most recent experience in DUNE with systems of this kind comes from the protoDUNE-SP experiment.
-The experiment employed hardware/QC databases which were distinct in both
-design and implementation for each major element of construction and installation. For example, the CE QC
-systems were designed specifically for purposes of testing and quality control of the Cold Electronics,
-and were distinct from databases used in manufacturing of the FEMB, APAs/CPAs, cabling database etc.
-The DUNE experiment represents a vastly larger scale in terms of the component count and
-overall complexity and will require well-coordinated design of such databases. For these reasons,
-it is necessary to define a base set of requirements and design criteria in this work area.
+The most recent experience in DUNE with systems of this kind comes from the protoDUNE-SP
+experiment. The experiment employed several hardware/QC databases which were distinct
+for a few elements of the apparatus. For example, the Cold Electronics QC systems were designed specifically
+for purposes of testing and quality control of the novel Cold Electronics and as such provided ample capabilities
+for storing and analysis of the data collected.
 
-\section{Basic Requirements}
-\subsection{Components and Associations}
+Other databases used in manufacturing, transport and installation of the PD paddles, APA/CPA and the TPC
+components were different in many regards and based on the platform commonly referred to as
+``FNAL hardware DB'' \cite{hardwareDB}. In each database, relationships between individual components
+and modules are described by reference utilizing a consistent set of primary IDs, specific for the particular DB.
 
-In the following, we 
-Consider the following basic requirements regarding information about components and their relationships:
+The DUNE experiment represents a vastly larger scale in terms of the component count,
+overall complexity and significantly more challenging installation procedures. Optimal execution
+of manufacturing, installation, commissioning and operations will require a well thought out design
+the databases in the context presented here. For these reasons it is necessary to define a
+basic set of requirements and design criteria in this work area.
+
+\section{Components and Associations}
+\subsection{Basic Requirements}
+
+In the following, we consider the following basic requirements regarding information about components and their relationships:
 
 \begin{itemize}
 
-\item Every hardware component used in DUNE needs to be uniquely identifiable, described in the
+\item Every hardware component used in DUNE needs to be \textit{uniquely identifiable}, described in the
 system and accompanied by information with content specific to the component and its state, and level
 of detail necessary to ensure successful manufacture, QC, delivery, assembly, installation, commissioning
 and operation and maintenance of DUNE
 
-\item Likewise, \textit{associations} of the components need to be uniquely identifiable and described
+\item Likewise, \textit{associations} of the components need to be \textit{uniquely identifiable} and described
 in the system in ways specific to each situation; ``association'' may mean an assembly or aggregation of
-components in a hierarchical manner e.g.\,electronic components installed on a FEMB, or in terms of
-point-to-point connections between components or subsystems
+components in a hierarchical manner e.g.\,electronic components installed on a FEMB
+
+%, or in terms of point-to-point connections between components or subsystems
 
 \end{itemize}
 
@@ -108,8 +118,8 @@ responsible for changing the record (a person and/or institution)
 
 \begin{thebibliography}{1}
 
-\bibitem{test}
-{\textit{A test} \url{https://arxiv.org/abs/1712.06982}}
+\bibitem{hardwareDB}
+{\textit{Hardware DB Wiki} \url{https://cdcvs.fnal.gov/redmine/projects/hardwaredb/wiki}}
 
 \end{thebibliography}
 
