@@ -41,9 +41,9 @@ for a few elements of the apparatus. For example, the Cold Electronics QC system
 for purposes of testing and quality control of the novel Cold Electronics and as such provided ample capabilities
 for storing and analysis of the data collected.
 
-Other databases used in manufacturing, transport and installation of the PD paddles, APA/CPA and the TPC
-components were different in many regards and based on the platform commonly referred to as
-``FNAL hardware DB'' \cite{hardwareDB}. In each database, relationships between individual components
+Other databases existed (sometimes as prorotypes) to be used in manufacturing, transport and installation of the PD
+paddles, APA/CPA and the TPC components were different in many regards and based on the platform commonly
+referred to as ``FNAL hardware DB'' \cite{hardwareDB}. In each database, relationships between individual components
 and modules are described by reference utilizing a consistent set of primary IDs, specific for the particular DB.
 
 The DUNE experiment represents a vastly larger scale in terms of the component count,
@@ -52,14 +52,25 @@ of manufacturing, installation, commissioning and operations will require a well
 the databases in the context presented here. For these reasons it is necessary to define a
 basic set of requirements and design criteria in this work area.
 
-\section{Components and Associations}
+\section{Components and Aggregations}
+\subsection{Tree model of the detector}
+
+It is natural to describe the DUNE apparatus and its parts in terms of hierarchy of elements e.g. model
+these as trees. For example a FEMB can be modeled as an aggregation which contains various electronics
+components e.g. ASICS, and specifically as a tree. This approach was used in the DB schemas of the
+database tables for protoDUNE-SP elements such as CPA, Photon Detector etc.
+
+Most components (parts) are aggregates themselves. Definining the levels of the hierarchical structure
+of components in DUNE is beyond the scope of this paper, we just note here that this will need to be
+done in the design phase.
+
 \subsection{Basic Requirements}
 
 In the following, we consider the following basic requirements regarding information about components and their relationships:
 
 \begin{itemize}
 
-\item Every hardware component used in DUNE needs to be \textit{uniquely identifiable}, described in the
+\item Every component used in DUNE needs to be \textit{uniquely identifiable}, described in the
 system and accompanied by information with content specific to the component and its state, and level
 of detail necessary to ensure successful manufacture, QC, delivery, assembly, installation, commissioning
 and operation and maintenance of DUNE
@@ -79,8 +90,12 @@ In further detailing the requirements, we make the following assumptions:
 
 \begin{itemize}
 
-\item Each component can exist in a variety of states. The chain of events starting from design/ordering/manufacture and
-then on to QC, shipping, installation, testing ``in citu'' etc is reflected by the changing state of the component as recorded
+\item Each component can exist in a variety of states.
+
+\item Sets of states will differ depending on the component
+
+\item The chain of events starting from design/ordering/manufacture and then on to QC,
+shipping, installation, testing ``in citu'' etc is reflected by the changing state of the component as recorded
 in the database
 
 \item The exact sequence of transitions depends on the exact nature of the specific  component
