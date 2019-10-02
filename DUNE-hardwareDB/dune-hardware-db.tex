@@ -8,9 +8,9 @@
 \usepackage[pdftex,pdfpagelabels,bookmarks,hyperindex,hyperfigures]{hyperref}
 
 
-\title{Basic Requirements for the Hardware/Construction Database Systems in DUNE}
+\title{Functional Requirements for the Hardware/Construction Database System in DUNE and a Proposal for its Design}
 \date{\today}
-\author{D.\,Arkhipkin, M.\,Potekhin, B.\,Viren}
+\author{M.\,Potekhin, B.\,Viren}
 
 
 \begin{document}
@@ -23,9 +23,14 @@ These systems will include hardware/QC/construction/installation and other datab
 It is important to ensure proper integration, interconnectivity and interoperability of these
 databases  as well as interfaces to other systems such as calibration, slow controls etc.
 It is also important to make it possible to describe the evolution of various hardware modules
-in time in terms of their composition (e.g. circuits replaced) and potentially structure.
-We consider basic requirements to the databases and their interfaces  in the context
-presented above, as well as basic implication for their design.
+in time in terms of their composition (e.g. circuits replaced) and potentially even their structure.
+We propose a hierarchical approach to the description of the apparatus and a state transition
+model for the construction process. Accordingly, we consider a few \textit{functional}
+requirements to the databases and their interfaces  in the context presented above,
+as well as implications for the system design.
+Our proposal is based in part on the recent experience in protoDUNE-SP.
+
+%, as well as basic implication for their design.
 
 %Actual design and technology downselect are outside of the scope of this document.
 
@@ -39,12 +44,14 @@ The most recent experience in DUNE with systems of this kind comes from the prot
 experiment. The experiment employed several hardware/QC databases which were distinct
 for a few elements of the apparatus. For example, the Cold Electronics QC systems were designed specifically
 for purposes of testing and quality control of the novel Cold Electronics and as such provided ample capabilities
-for storing and analysis of the data collected.
+for storing and analysis of the data collected. A dedicated database was used for managing the CE information.
 
-Other databases existed (sometimes as prorotypes) to be used in manufacturing, transport and installation of the PD
-paddles, APA/CPA and the TPC components were different in many regards and based on the platform commonly
-referred to as ``FNAL hardware DB'' \cite{hardwareDB}. In each database, relationships between individual components
-and modules are described by reference utilizing a consistent set of primary IDs, specific for the particular DB.
+Other databases were created (sometimes only as prorotypes) to support manufacturing, transport and installation of 
+protoDUNE-SP elements such as the PD paddles, APA/CPA and other TPC components. These were distinct from
+the CE DB systems and based on the platform commonly referred to as ``FNAL hardware DB'' \cite{hardwareDB}.
+There were separate databases corresponding to different element types. In each such database the
+relationships between individual components and modules were described by reference utilizing a
+consistent set of primary IDs, specific for the particular DB.
 
 The DUNE experiment represents a vastly larger scale in terms of the component count,
 overall complexity and significantly more challenging installation procedures. Optimal execution
@@ -53,48 +60,69 @@ the databases in the context presented here. For these reasons it is necessary t
 basic set of requirements and design criteria in this work area.
 
 \section{Components and Aggregations}
-\subsection{Tree model of the detector}
+\subsection{Hierarchical model of the apparatus}
 
-It is natural to describe the DUNE apparatus and its parts in terms of hierarchy of elements e.g. model
-these as trees. For example a FEMB can be modeled as an aggregation which contains various electronics
-components e.g. ASICS, and specifically as a tree. This approach was used in the DB schemas of the
-database tables for protoDUNE-SP elements such as CPA, Photon Detector etc.
+It is natural to describe the DUNE apparatus in terms of hierarchy of elements e.g. model it
+as a tree. Same applied to its components, for example a FEMB can be modeled as an
+aggregation which contains various electronics components e.g. ASICS, and can be decsribed as a tree.
+This approach was in fact used in the individual DB schemas for protoDUNE-SP elements such as CPA, Photon Detector etc.
 
-Most components (parts) are aggregates themselves. Definining the levels of the hierarchical structure
-of components in DUNE is beyond the scope of this paper, we just note here that this will need to be
-done in the design phase.
+Most DUNE components are aggregations themselves, although the leaves of the tree will likely
+be atomic (i.e. an individual ASIC).  Definining the levels and granularity of the hierarchical structure of components
+in DUNE is beyond the scope of this paper, we just note here that this will need to be done in the design phase.
+In the following we assume that a \textit{component} may be either atomic or an \textit{aggregation} of other components
+subject to the same assumption.
 
-\subsection{Basic Requirements}
+\subsection{The Unique ID Requirement}
 
-In the following, we consider the following basic requirements regarding information about components and their relationships:
+To make it possible to create and evolve the hierarchical description of DUNE along the lines described above
+we postulate the following requirement:
 
 \begin{itemize}
 
-\item Every component used in DUNE needs to be \textit{uniquely identifiable}, described in the
-system and accompanied by information with content specific to the component and its state, and level
-of detail necessary to ensure successful manufacture, QC, delivery, assembly, installation, commissioning
-and operation and maintenance of DUNE
-
-\item Likewise, \textit{associations} of the components need to be \textit{uniquely identifiable} and described
-in the system in ways specific to each situation; ``association'' may mean an assembly or aggregation of
-components in a hierarchical manner e.g.\,electronic components installed on a FEMB
-
-%, or in terms of point-to-point connections between components or subsystems
+\item Every component used in DUNE ---  either atomic or an aggregation --- needs to be \textit{uniquely identifiable} in a way that allows
+creation of any type of associations of components
 
 \end{itemize}
 
-\noindent Now let us consider these requirements in more detail.
 
-\subsection{Components}
-In further detailing the requirements, we make the following assumptions:
+\noindent Note that the above requirement is crucial to allow for the eventual evolution of DUNE as it undergoes construction and installation.
+New aggregations can thus be created where necessary. The unique identifiers in this context are distinct from the manufacturers' and other ad hoc IDs'.
+
+%\item Likewise, \textit{associations} of the components need to be \textit{uniquely identifiable} and described
+%in the system in ways specific to each situation; ``association'' may mean an assembly or aggregation of
+%components in a hierarchical manner e.g.\,electronic components installed on a FEMB
+%---------------------------------------------
+%, or in terms of point-to-point connections between components or subsystems
+
+
+
+
+\subsection{The Completeness Requirement}
+
+To ensure the functionality of the database we propose the following requirement:
+\begin{itemize}
+\item each component shall be fully described in the system with level of detail necessary to
+ensure successful manufacture, QC, delivery, assembly, installation, commissioning
+and operation and maintenance of DUNE
+
+\item such information will be specific to the component in any of its possible states
+
+\end{itemize}
+
+%\noindent Now let us consider these requirements in more detail.
+
+\section{States, Transitions and Component Evolution}
+
+\subsection{Component States and state transitions}
+
+We propose the following model:
 
 \begin{itemize}
 
-\item Each component can exist in a variety of states.
+\item Each component can exist in a variety of \textit{states}, and its set of possible states will differ depending on the component
 
-\item Sets of states will differ depending on the component
-
-\item The chain of events starting from design/ordering/manufacture and then on to QC,
+\item The chain of events starting from design/ordering/manufacture (or procurement) and then on to QC,
 shipping, installation, testing ``in citu'' etc is reflected by the changing state of the component as recorded
 in the database
 
@@ -104,32 +132,133 @@ in the database
 one example is metrics collected during the QC procedures for CE; the exact nature, size and format of data thus produced
 depends on the specific component and transition
 
-\item Each state transition may optionally require a record in the audit trail, i.e.\,reason for the event and the entity
-responsible for changing the record (a person and/or institution)
+\item In the item above, there will be cases when the database will only contain \textit{references} to external data storage
+and sources as it is impractical to store certain data products e.g. ROOT files directly in the DB
+
+\item Each state transition may optionally require a record in the audit trail e.g.\,the time stamp, the reason for the event
+any comments required in the process and the entity responsible for changing the state and updating the record
+(a person and/or institution). Examples already exist in the ``FNAL Hardware DB''
+
+\item If the state transition is due to application of a manufacturing step, a specific test or some other technological procedure
+the nature and the parameters of such procedure must be recorded in the system and be \textit{uniquely identifiable} 
 
 \end{itemize}
 
-\subsection{Associations}
-In further detailing the requirements, we make the following assumptions::
+\subsection{Component Evolution}
+
+Consider the use case where a particular component within an aggregation needs to be replaced,
+such as a failed ASIC installed on a board. This process can be modeled in at least two ways:
 
 \begin{itemize}
 
-\item Each component can be included in a number of associations, perhaps of different kinds; a bundle of cables
-can be a part of an assembly while also representing connections between sub-assemblies
+\item The old aggregation (e.g. the board) is marked as ``retired'' and the audit trail record created; a new aggregation is
+created, assigned a new \textit{unique ID} and assumes the place of the old one
 
-\item The exact sequence of transitions depends on the exact nature of the specific  component
+\item Or, the aggregation with its existing \textit{unique ID} is preserved but is assigned a new \textit{version number};
+again, an audit trail record is created
 
-\item Each state transition may optionally result in a data product specific to the component and the specific transition;
-one example is metrics collected during the QC procedures for CE; the exact nature, size and format of data thus produced
-depends on the specific component and transition
+\end{itemize}
 
-\item Each state transition may optionally require a record in the audit trail, i.e.\,reason for the event and the entity
-responsible for changing the record (a person and/or institution)
+\noindent The concrete choice of solution will depend on the particular component so it needs to be deferred to the
+design and implementation stage.
+
+The hierarchical model presented in this paper allows to handle an important use case whereby a component (module)
+is completely redesigned in terms of its construction and composition while retaining its place in the overall hierarchy.
+
+\section{Component Location and Ownership}
+
+We put forth the following requirements in this area:
+\begin{itemize}
+
+\item The  the geographical location and current ownership of the item constitute an integral part of its \textit{state}
+
+\item It must be possible to describe the geographical location of the item with a high degree of granularity e.g. down to a building,
+room, rack, storage box etc
+
+
+\end{itemize}
+
+\section{Integration with the Industrial ID Systems}
+
+The DUNE Hardware Database will have the functionality for integration with barcode and QR scanners to facilitate
+all stages of the construction process wherever such devices are available. These do not serve as a substitute to the
+unique component ID described above but are complementary to it.
+
+\section{Interfaces}
+
+The database will be required to have a variety of interfaces as dictated by its applciations e.g.
+
+\begin{itemize}
+
+\item Web interface for operators and managers, which will effectively create a full-fledged information system
+
+\item Network-based command-line interface which will allow automation (such as scripting) of operations
+and integration of various production processes
 
 \end{itemize}
 
 
-\clearpage
+\section{Summary of Functional Requirements}
+
+\begin{itemize}
+
+\item Ability to handle both atomic components and aggegation type components
+
+\item Flexibility in the component definition e.g. the composition, structure and level of aggrregation
+
+\item Unique identification of each component in the context presented above
+
+\item Completeness: all information should be available directly in the database or by reference to a reliable external source
+(example: detailed ASIC QC data)
+
+\item Complete audit trail for each state transition/procedure
+
+\item Component versioning capability
+
+\item Complete location/ownership information record as part of the state
+
+\item Provisons for integration with industrial automated identification methods such as barcodes, QR codes etc
+
+\item A set of interfaces to allow the creation of a user-friendly information system as well integration of the production, testing, QC,
+logistics and installation procedures into the system
+
+\end{itemize}
+
+
+\section{Outline of the Design Proposal}
+
+We propose to create a design of the DUNE Hardware Database driven by the requirements presented above. The key
+motivations are
+
+\begin{itemize}
+
+\item to avoid duplication of effort
+
+\item to prevent divergent and/or incompatible designs in each sybsystem area
+
+\item to provide a system-wide view of the production, testing, QC, logistics and installation process necessary
+for efficiency of management, identification of problam areas and bottlenecks and minimizing errors in all stages
+of the DUNE construction
+
+
+\end{itemize}
+
+\noindent As one of the first steps in the design process, we propose to survey the systems used by individual
+teams and groups reponsible for R\&D in  DUNE up to this point, and including the more recent experience in
+the construction and commissioning of the proroDUNE-SP experiment. Possible reuse of components should
+be considered wherever possible, with adaptations as necessary to conform to the functional requirements
+outlined above. At present, creation of a new centralized database is also on the table as a design option.
+
+
+
+
+
+
+
+
+
+
+% \clearpage
 
 \begin{thebibliography}{1}
 
