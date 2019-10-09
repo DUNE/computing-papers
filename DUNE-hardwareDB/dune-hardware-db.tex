@@ -8,7 +8,7 @@
 \usepackage[pdftex,pdfpagelabels,bookmarks,hyperindex,hyperfigures]{hyperref}
 
 
-\title{Functional Requirements for the Hardware/Construction Database System in DUNE and a Proposal for its Design}
+\title{Functional Requirements for the Hardware/Construction Database System in DUNE and Options for its Design}
 \date{\today}
 \author{M.\,Potekhin, B.\,Viren}
 
@@ -22,17 +22,13 @@ and accounting  in the areas of manufacturing, QC, logistics, installation and m
 These systems will include hardware/QC/construction/installation and other databases.
 It is important to ensure proper integration, interconnectivity and interoperability of these
 databases  as well as interfaces to other systems such as calibration, slow controls etc.
-It is also important to make it possible to describe the evolution of various hardware modules
-in time in terms of their composition (e.g. circuits replaced) and potentially even their structure.
+It is also important to ensure the possibility to describe the evolution of various hardware modules
+in time in terms of their composition (e.g. circuits replaced) and potentially even their structure;
+this implies version control capability.
 We propose a hierarchical approach to the description of the apparatus and a state transition
 model for the construction process. Accordingly, we consider a few \textit{functional}
 requirements to the databases and their interfaces  in the context presented above,
-as well as implications for the system design.
-Our proposal is based in part on the recent experience in protoDUNE-SP.
-
-%, as well as basic implication for their design.
-
-%Actual design and technology downselect are outside of the scope of this document.
+as well as implications and options for the system design.
 
 \end{abstract}
 
@@ -45,19 +41,25 @@ experiment. The experiment employed several hardware/QC databases which were dis
 for a few elements of the apparatus. For example, the Cold Electronics QC systems were designed specifically
 for purposes of testing and quality control of the novel Cold Electronics and as such provided ample capabilities
 for storing and analysis of the data collected. A dedicated database was used for managing the CE information.
+% Data collected during in the process of testing was archived and made available for user analysis.
 
 Other databases were created (sometimes only as prototypes) to support manufacturing, transport and installation of 
 protoDUNE-SP elements such as the PD paddles, APA/CPA and other TPC components. These were distinct from
-the CE DB systems and based on the platform commonly referred to as ``FNAL hardware DB'' \cite{hardwareDB}.
-There were separate databases corresponding to different element types. In each such database the
+the CE DB systems and based on the platform commonly referred to as ``FNAL hardware DB'' \cite{hardwareDB}
+with separate databases used for different element types. In each such database the
 relationships between individual components and modules were described by reference utilizing a
-consistent set of primary IDs, specific for the particular DB.
+consistent set of primary IDs, specific for the particular DB. No common numbering scheme was used.
+Some information (e.g.\,logistics) remained external to the DB and had to be managed separately.
 
 The DUNE experiment represents a vastly larger scale in terms of the component count,
 overall complexity and significantly more challenging installation procedures. Optimal execution
 of manufacturing, installation, commissioning and operations will require a well thought out design
-the databases in the context presented here. For these reasons it is necessary to define a
-basic set of requirements and design criteria in this work area.
+of the databases in the context presented here. Possible reuse and adaptation of existing technologies
+is highly desirable.
+% For these reasons it is necessary to define a
+% basic set of requirements and design criteria in this work area.
+
+% At the time of writing no consolidated listing of the support tooling, installation equipment, test stands, and other construction infrastructure exists.
 
 \section{Components and Aggregations}
 \subsection{Hierarchical model of the apparatus}
@@ -68,7 +70,7 @@ aggregation which contains various electronics components e.g. ASICS, and can be
 This approach was in fact used in the individual DB schemas for protoDUNE-SP elements such as CPA, Photon Detector etc.
 
 Most DUNE components are aggregations themselves, although in graph terms, the leaves of the tree are atomic
-by definition (i.e. an individual ASIC).  Definining the levels and granularity of the hierarchical structure of components
+by definition (i.e.\,an individual ASIC).  Definining the levels and granularity of the hierarchical structure of components
 in DUNE is beyond the scope of this paper, we just note here that this will need to be done in the design phase.
 In the following we assume that a \textit{component} may be either atomic or an \textit{aggregation} of other components
 subject to the same assumption.
@@ -103,6 +105,20 @@ New aggregations can thus be created where necessary. The unique identifiers in 
 
 
 
+\subsection{The Traceability Requirement}
+
+It must be possible, given the ID (and perhaps other attributes or references of a component described in the database)
+to identify it in documents such as technical drawings, schematics and any other documentation for QC and installation.
+For example, given the component ID it must be possible to identify and retrieve a document describing the relevant QC
+procedures. It is implied that the exact provenance (e.g.\,the manufacturer) of each component must be recorded, and
+queries based on such attributes must be enabled.
+
+% comment by Jim Stewart:
+% I think an additional requirement is traceability. You need from any number to find the drawing where it
+% is defined and related documentation for the assembly and QC. If I give you a number you can them tell
+% me where to find the drawing/schematic where it is defined and the QC document describing the testing and so on.
+
+
 
 \subsection{The Completeness Requirement}
 
@@ -120,8 +136,8 @@ and operation and maintenance of DUNE
 
 \section{States, Transitions and Component Evolution}
 
-\subsection{Component States and state transitions}
-
+\subsection{Component States and State Transitions}
+\label{states}
 We propose the following model:
 
 \begin{itemize}
@@ -136,12 +152,12 @@ in the database
 \item The exact sequence of transitions depends on the exact nature (class) of the specific  component; one
 critically important case of transition is \textit{aggregation}
 
-\item Each state transition may optionally result in a data product specific to the component and the specific transition;
-one example is metrics collected during the QC procedures for CE; the exact nature, size and format of data thus produced
+\item Each state transition may optionally result in a data product specific to the component and the specific transition.
+One example is metrics collected during the QC procedures for CE. The exact nature, size and format of data thus produced
 depends on the specific component and transition
 
 \item In the item above, there will be cases when the database will only contain \textit{references} to external data storage
-and sources as it is impractical to store certain data products e.g. ROOT files directly in the DB
+and sources as it is often impractical to store certain data products e.g.\,ROOT files directly in the DB
 
 \item Each state transition may optionally require a record in the audit trail e.g.\,the time stamp, the reason for the event
 any comments required in the process and the entity responsible for changing the state and updating the record
@@ -175,14 +191,17 @@ is completely redesigned in terms of its construction and composition while reta
 
 \section{Component Location and Ownership}
 
-We put forth the following requirements in this area:
+We will use the concept of the \textit{functional position} introduced in \cite{atlasequipmentdb}, which refers
+to a physical position of a component specific to its function and which cannot be moved. We put forth the
+following requirements in this area:
 \begin{itemize}
 
-\item The  the geographical location and current ownership of the item constitute an integral part of its \textit{state}
+\item The  the geographical location and the functional position of the item (if applicable) constitute an integral part of its \textit{state}
 
-\item It must be possible to describe the geographical location of the item with an appropriate degree of granularity e.g. down to a building,
-room, rack, storage box etc depending on judgments made on a per component (class) basis
+\item The current ownership of the item constitute an integral part of its \textit{state}
 
+\item It must be possible to describe the geographical location and functional position of the item with an appropriate
+degree of granularity e.g.\,down to a building, room, rack, board, socket etc
 
 \end{itemize}
 
@@ -191,7 +210,7 @@ room, rack, storage box etc depending on judgments made on a per component (clas
 
 \subsection{Network and Web}
 
-The database will be required to have a variety of interfaces as dictated by its applciations e.g.
+The database will be required to have a variety of interfaces as dictated by its applications e.g.
 
 \begin{itemize}
 
@@ -202,6 +221,32 @@ and integration of various production processes
 
 \end{itemize}
 
+
+
+\subsection{Support of the Component Lifecycle}
+%Conditions DB, Calibrations and other DUNE Systems
+
+The complete set of state transitions (\ref{states}) of a component forms its lifecycle. These may
+evolve changing the composition, physical characteristics, location, and associated documentation.
+We puth forth the following requirement:
+\begin{itemize}
+
+\item the system must provide adequate support of the component lifecycle, including its history
+complete with testing and QC, evolving documentation and additional metrics collected after its deployment
+
+\end{itemize}
+
+
+\noindent As an additional example, there are cases like the CE QC and other test data where the metrics collected form a part of the
+initial calibrations parameters. For this reason, appropriate interfaces must be created to ensure
+reliable transfer of such data across the systems. In order to evaluate the performance history and condition of a particular
+electronic component it must be possible to get access to subsequent iterations
+of the calibration data as well, i.e.\,to provide access to data sources outside of the hardware database itself.
+
+\subsection{Authentication/Authorization}
+To properly manage the component lifecycle and a variety of other information presented in the database it will be necessary
+to integrate with an authentication/authorization system e.g\, a site SSO.
+
 \subsection{Industrial ID Systems and Mobile Platforms}
 
 The DUNE Hardware Database will have the functionality for integration with barcode and QR scanners to facilitate
@@ -209,14 +254,14 @@ all stages of the construction process wherever such devices are available. Thes
 unique component ID described above but are complementary to it.
 
 When testing large-scale components of the DUNE experiment and also in the installation stage
-it may become necessary to use mobile devices (tablets, scanners etc) to feed and also to access
-information to the database. Such interfaces must be included in the design.
+it may become necessary to use mobile devices (tablets, scanners etc) in the field to feed information to the database
+and also to read data from the database. Such interfaces must be included in the design.
 
 \section{Summary of Functional Requirements}
 
 \begin{itemize}
 
-\item Ability to handle both atomic components and aggegation type components
+\item Ability to handle both atomic components and aggregation type components
 
 \item Flexibility in the component definition e.g. the composition, structure and level of aggrregation
 
@@ -225,7 +270,11 @@ information to the database. Such interfaces must be included in the design.
 \item Completeness: all information should be available directly in the database or by reference to a reliable external source
 (example: detailed ASIC QC data)
 
+\item Treaceability: provision of references to a variety of technical documentation for a particular component
+
 \item Complete audit trail for each state transition/procedure
+
+\item Auth/Auth
 
 \item Component versioning capability (if such capability is required by choosing the second option in (\ref{evolution})
 
@@ -236,39 +285,152 @@ information to the database. Such interfaces must be included in the design.
 \item A set of interfaces to allow the creation of a user-friendly information system as well integration of the production, testing, QC,
 logistics and installation procedures into the system
 
+\item Interfaces to the Conditions and Calibration databases as well as document handling systems
+
 \end{itemize}
 
 
-\section{The Proposal}
+\section{Reusability}
 
-We propose to create a design of the DUNE Hardware Database driven by the requirements presented above. The key
-motivations are
+It is foreseen that any design or adaptation of a system that meets the functional requirements listed
+above will require a substantial investment of effort and resources. For this reason, we propose to
+state a collateral requirement that the system used in DUNE should be experiment-agnostic in
+terms of its architecture, and be adaptable to other projects. This will help to assure a more
+efficient use of resources and may serve to attract collaboration from other experiments
+as a part of a cross-cutting effort.
+
+\section{The Timeline}
+Component manufacturing and construction of the DUNE experiment has at least two distinct time
+scales that need to be addressed in the context presented here:
 
 \begin{itemize}
 
-\item to avoid duplication of effort
+\item Near and Medium Term
+\begin{itemize}
 
-\item to prevent divergent and/or incompatible designs in each sybsystem area
+\item Preparations for the protoDUNE-2 experiment, with manufacturing of components to commence in 2020, and installation scheduled for 2021
+\item Early manufacturing of certain components of the DUNE experiment
+\end{itemize}
+
+\item Longer term, including manufacturing and installation of the DUNE detector, commissioning and operation
+\end{itemize}
+
+\noindent While there is a substantial time pressure to address the needs of DUNE in the near and medium ter,
+at the time of writing it seems unlikely that a system capable of addressing the requirements
+presented in this paper can be created (or adopted from another experiment) on such short timescale.
+We propose to mitigate this in the following manner:
+
+\begin{itemize}
+
+\item Survey and catalog the interim systems (e.g.\,existing and in use at participating sites)
+which are likely to be used in near and medium term
+
+\item Identify additional attributes (if any) to be added to object models in these systems to allow
+for eventual migration to the final system
+
+\item Define formats for data export and ingestion necessary for such migration
+
+\end{itemize}
+
+\section{The Proposal}
+
+We propose the following action items:
+\begin{itemize}
+
+\item conduct a comprehensive survey of the DUNE Consortia and computing groups
+in order to agree on a common set of requirements for the database in the context presented
+in this paper
+
+\item we propose to evaluate a few different design options, such as summarized in the
+next section (\ref{options}). The ultimate aim of this effort is to preferably identify a possible
+existing solution or perhaps a new deisgn satisfying the requirements of the Collaboration at large. 
+
+\end{itemize}
+
+\noindent The key motivations are:
+
+\begin{itemize}
+
+\item to avoid duplication of effort and meet the requirements to the greates extent possible
+
+\item to prevent divergent and/or incompatible designs in each sybsystem area and avoid operational risks associated with that
 
 \item to provide a system-wide view of the production, testing, QC, logistics and installation process necessary
 for efficiency of management, identification of problam areas and bottlenecks and minimizing errors in all stages
 of the DUNE construction
 
+\end{itemize}
+
+% As one of the first steps in the design process, we propose to survey the systems used by individual
+%teams and groups reponsible for R\&D in  DUNE up to this point, and including the more recent experience in
+%the construction and commissioning of the proroDUNE-SP experiment. 
+
+\section{Options}
+\label{options}
+
+\subsection{Reuse}
+Possible reuse of components and/or existing systems should be considered whenever possible,
+with adaptations as necessary to conform to the functional requirements outlined above. We consider
+two candidates below, without necessarily limiting ourselves to these two.
+
+\subsubsection{The FNAL Hardware DB}
+
+The current version of the FNAL Hardware DB \cite{hardwareDB} is a collection of tools aimed at facilitating the creation,
+management and use of the hardware databases required by the groups working on manufacturing and QC of detector
+components. The system was used in two subsystem of the protoDUNE-SP experiment.
+
+\begin{itemize}
+
+\item Pros
+\begin{itemize}
+\item A well understood system proven in previous experiments, with good support and expertise at FNAL
+\item Supports many of the requirements listed above
+\end{itemize}
+
+\item Cons
+\begin{itemize}
+\item A rigid schema not well suited for evolution (e.g.\,QC procedures essentially hardcoded in the schemas)
+\item Still lacking many features necessary to meet the DUNE requirements, lack of integration with other components
+modeled in the same framework and with external systems
+\item Web UI pretty rudimentary
+\end{itemize}
+
+\item Reuse strategy
+\begin{itemize}
+\item Using experience with the system, upgrade it by introducing a Web framework allowing for OO-based modeling and schema evolution
+\item Implement integration with external systems
+\item Update the Web UI and other clients
+\end{itemize}
+
 
 \end{itemize}
 
-\noindent As one of the first steps in the design process, we propose to survey the systems used by individual
-teams and groups reponsible for R\&D in  DUNE up to this point, and including the more recent experience in
-the construction and commissioning of the proroDUNE-SP experiment. Possible reuse of components should
-be considered wherever possible, with adaptations as necessary to conform to the functional requirements
-outlined above. At present, creation of a new centralized database is also on the table as a design option.
+\subsubsection{ATLAS Equipment Database}
 
+An introduction to the ATLAS Equipment DB is presented in \cite{atlasequipmentdb}.
 
+\begin{itemize}
 
+\item Pros
+\begin{itemize}
+\item A full featured system covering many complex use cases
+\item Likely supports most and perhaps all of the requirements listed above
+\item Proven during construction, installation and operation of a very complex detector
+\item Integration of a number of separate databases (using the Glance system, \cite{glance})
+\end{itemize}
 
+\item Cons
+\begin{itemize}
+\item Substantially based on a proprietory commercial system (Infor EAM \cite{infor}, formerly d7i), entailing the licensing and lifecycle issues
+\item Has many hooks into the vast CERN information infrastructure which would be hard to disentangle in the reuse scenario
+\item Considerable amount of work was required to tool the database for ATLAS needs, this part won't be reusable in any case
+\end{itemize}
 
+\end{itemize}
 
-
+\subsection{New Development}
+At present, creation of a new hardware database for DUNE is also on the table as a design option.
+Discussion of the possible design directions is deferred till a later time.
 
 
 
@@ -278,6 +440,19 @@ outlined above. At present, creation of a new centralized database is also on th
 
 \bibitem{hardwareDB}
 {\textit{Hardware DB Wiki} \url{https://cdcvs.fnal.gov/redmine/projects/hardwaredb/wiki}}
+
+\bibitem{atlasequipmentdb}
+{\textit{\mbox{Management of Equipment Databases at CERN for the ATLAS Experiment}}
+\mbox{DOI: 10.1142/9789812819093\_0129}
+}
+
+\bibitem{glance}
+{\textit{\mbox{Glance project: a database retrieval mechanism for the ATLAS detector}}
+\mbox{DOI: 10.1088/1742-6596/119/4/042020}
+}
+
+\bibitem{infor}
+{\textit{Infor EAM} \url{https://www.infor.com/products/eam}}
 
 \end{thebibliography}
 
