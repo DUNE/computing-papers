@@ -61,12 +61,12 @@ is highly desirable.
 
 % At the time of writing no consolidated listing of the support tooling, installation equipment, test stands, and other construction infrastructure exists.
 
-\section{Components and Aggregations}
-\subsection{Hierarchical model of the apparatus}
+\section{The Model}
+\subsection{Components and Aggregations}
 
-It is natural to describe the DUNE apparatus in terms of hierarchy of elements e.g. model it
+It is natural to describe the DUNE apparatus in terms of hierarchy of elements e.g.\,model it
 as a \textit{graph}. Same applied to its components, for example a FEMB can be modeled as an
-aggregation which contains various electronics components e.g. ASICS, and can be decsribed as a graph.
+\textit{aggregation} which contains various electronics components e.g. ASICS, and can be decsribed as a graph.
 This approach was in fact used in the individual DB schemas for protoDUNE-SP elements such as CPA, Photon Detector etc.
 
 Most DUNE components are aggregations themselves, although in graph terms, the leaves of the tree are atomic
@@ -79,61 +79,6 @@ subject to the same assumption.
 \label{classification}
 To provide consistency to the following set of requirements, we propose to create \textit{``class definitions''} for the components
 i.e.\,identify types of components that can be defined in the system utilizing the same set of schemas.
-
-
-\subsection{The Unique ID Requirement}
-
-To make it possible to create and evolve the hierarchical description of DUNE along the lines described above
-we postulate the following requirement:
-
-\begin{itemize}
-
-\item Every component used in DUNE ---  either atomic or an aggregation --- needs to be \textit{uniquely identifiable} in a way that allows
-creation of any type of associations of components
-
-\end{itemize}
-
-
-\noindent Note that the above requirement is crucial to allow for the eventual evolution of DUNE as it undergoes construction and installation.
-New aggregations can thus be created where necessary. The unique identifiers in this context are distinct from the manufacturers' and other ad hoc IDs.
-At the same time the unque IDs \textit{are associated} with the manufacturers' and other ad hoc IDs in the database.
-
-%\item Likewise, \textit{associations} of the components need to be \textit{uniquely identifiable} and described
-%in the system in ways specific to each situation; ``association'' may mean an assembly or aggregation of
-%components in a hierarchical manner e.g.\,electronic components installed on a FEMB
-%---------------------------------------------
-%, or in terms of point-to-point connections between components or subsystems
-
-
-
-\subsection{The Traceability Requirement}
-
-It must be possible, given the ID (and perhaps other attributes or references of a component described in the database)
-to identify it in documents such as technical drawings, schematics and any other documentation for QC and installation.
-For example, given the component ID it must be possible to identify and retrieve a document describing the relevant QC
-procedures. It is implied that the exact provenance (e.g.\,the manufacturer) of each component must be recorded, and
-queries based on such attributes must be enabled.
-
-% comment by Jim Stewart:
-% I think an additional requirement is traceability. You need from any number to find the drawing where it
-% is defined and related documentation for the assembly and QC. If I give you a number you can them tell
-% me where to find the drawing/schematic where it is defined and the QC document describing the testing and so on.
-
-
-
-\subsection{The Completeness Requirement}
-
-To ensure the functionality of the database we propose the following requirement:
-\begin{itemize}
-\item each component shall be fully described in the system with level of detail necessary to
-ensure successful manufacture, QC, delivery, assembly, installation, commissioning
-and operation and maintenance of DUNE, and also document possible failures in any of these steps
-
-\item such information will be specific to each component class (\ref{classification}) in any of its possible states
-
-\end{itemize}
-
-%\noindent Now let us consider these requirements in more detail.
 
 \section{States, Transitions and Component Evolution}
 
@@ -205,12 +150,10 @@ again, an audit trail record is created
 \noindent The concrete choice of solution will depend on the particular component so it needs to be deferred to the
 design and implementation stage.
 
-\ 
-
-\noindent \textbf{The hierarchical model presented in this paper allows to handle an important use case whereby a component (module)
+The hierarchical model presented in this paper allows to handle an important use case whereby a component (module)
 is completely redesigned in terms of its construction and composition while retaining its functionality and 
 place in the overall hierarchy. Same applies to use cases where new aggregations of already existing components
-need to be defined for optimal management of the construction process.}
+need to be defined for optimal management of the construction process.
 
 
 
@@ -287,6 +230,56 @@ it may become necessary to use mobile devices (tablets, scanners etc) in the fie
 and also to read data from the database. Such interfaces must be included in the design.
 
 \section{Summary of Functional Requirements}
+
+
+\subsection{The Unique ID Requirement}
+
+To make it possible to create and evolve the hierarchical description of DUNE along the lines described above
+we postulate the following requirement:
+
+\begin{itemize}
+
+\item Every component used in DUNE ---  either atomic or an aggregation --- needs to be \textit{uniquely identifiable} in a way that allows
+creation of any type of associations of components
+
+\end{itemize}
+
+
+\noindent Note that the above requirement is crucial to allow for the eventual evolution of DUNE as it undergoes construction and installation.
+New aggregations can thus be created where necessary. The unique identifiers in this context are distinct from the manufacturers' and other ad hoc IDs.
+At the same time the unque IDs \textit{are associated} with the manufacturers' and other ad hoc IDs in the database.
+
+
+\subsection{The Traceability Requirement}
+
+It must be possible, given the ID (and perhaps other attributes or references of a component described in the database)
+to identify it in documents such as technical drawings, schematics and any other documentation for QC and installation.
+For example, given the component ID it must be possible to identify and retrieve a document describing the relevant QC
+procedures. It is implied that the exact provenance (e.g.\,the manufacturer) of each component must be recorded, and
+queries based on such attributes must be enabled.
+
+% comment by Jim Stewart:
+% I think an additional requirement is traceability. You need from any number to find the drawing where it
+% is defined and related documentation for the assembly and QC. If I give you a number you can them tell
+% me where to find the drawing/schematic where it is defined and the QC document describing the testing and so on.
+
+
+
+\subsection{The Completeness Requirement}
+
+To ensure the functionality of the database we propose the following requirement:
+\begin{itemize}
+\item each component shall be fully described in the system with level of detail necessary to
+ensure successful manufacture, QC, delivery, assembly, installation, commissioning
+and operation and maintenance of DUNE, and also document possible failures in any of these steps
+
+\item such information will be specific to each component class (\ref{classification}) in any of its possible states
+
+\end{itemize}
+
+%\noindent Now let us consider these requirements in more detail.
+
+\subsection{Old Requirements}
 
 \begin{itemize}
 
