@@ -19,7 +19,7 @@
 \begin{abstract}
 \noindent  The DUNE experiment requires systems and tools for management, control
 and accounting  in the areas of manufacturing, QC, logistics, installation and maintenance.
-These systems will include hardware/QC/construction/installation and other databases.
+% These systems will include hardware/QC/construction/installation and other databases.
 It is important to ensure proper integration, interconnectivity and interoperability of these
 databases  as well as interfaces to other systems such as calibration, slow controls etc.
 It is also important to ensure the possibility to describe the evolution of various hardware modules
@@ -61,13 +61,21 @@ is highly desirable.
 
 % At the time of writing no consolidated listing of the support tooling, installation equipment, test stands, and other construction infrastructure exists.
 
-\section{The Model}
-\subsection{Components and Aggregations}
+\section{The Model of the Apparatus}
+\subsection{Disclaimer}
 
+The model presented below is not a new concept but a generalization of design principles
+observed in databases such as in the FNAL Hardware DB \cite{hardwareDB}.
+
+\subsection{Components and Aggregations}
+\label{graph}
 It is natural to describe the DUNE apparatus in terms of hierarchy of elements e.g.\,model it
 as a \textit{graph}. Same applied to its components, for example a FEMB can be modeled as an
 \textit{aggregation} which contains various electronics components e.g. ASICS, and can be decsribed as a graph.
-This approach was in fact used in the individual DB schemas for protoDUNE-SP elements such as CPA, Photon Detector etc.
+This approach was in fact used in the individual DB schemas for protoDUNE-SP created in the FNAL
+Hardware DB \cite{hardwareDB}, by using foreign keys to connect related tables.
+
+%elements such as CPA, Photon Detector etc.
 
 Most DUNE components are aggregations themselves, although in graph terms, the leaves of the tree are atomic
 by definition (i.e.\,an individual ASIC).  Definining the levels and granularity of the hierarchical structure of components
@@ -75,21 +83,22 @@ in DUNE is beyond the scope of this paper, we just note here that this will need
 In the following we assume that a \textit{component} may be either atomic or an \textit{aggregation} of other components
 subject to the same assumption.
 
-\subsection{Classification}
-\label{classification}
-To provide consistency to the following set of requirements, we propose to create \textit{``class definitions''} for the components
-i.e.\,identify types of components that can be defined in the system utilizing the same set of schemas.
+%\subsection{Classification}
+%\label{classification}
+%To provide consistency to the following set of requirements, we propose to create \textit{``class definitions''} for the components
+%i.e.\,identify types of components that can be defined in the system utilizing the same set of schemas.
 
-\section{States, Transitions and Component Evolution}
+\subsection{States and Transitions}
 
-\subsection{Component States and State Transitions}
 \label{states}
-We propose the following model:
+To describe the progression of events from the design phase of the detector to its construction, installation
+and operation we propose the following model:
 
 \begin{itemize}
 
 \item Each component can exist in a variety of \textit{states}, and its set of possible states will differ depending on
-the component calls. For example, the component can be in states like (``ordered'', ``in transit'', ``received'', ``tested'', ``put in long term storage'',...) etc
+the component class. For example, the component can be in states like
+[\textit{``ordered'', ``in transit'', ``received'', ``tested'', ``put in long term storage'',...}] etc
 
 \item The chain of events starting from design/ordering/manufacture (or procurement) and then on to QC,
 shipping, installation, testing ``in situ'' etc is reflected by the changing state of the component as recorded
@@ -112,27 +121,7 @@ any comments required in the process and the entity responsible for changing the
 \end{itemize}
 
 
-\subsection{Requirements related to State Transitions}
-\label{history}
-\begin{itemize}
-
-\item History: a complete history of state transitions of a component  preserved in the database (where applicable)
-
-\item Timelime: a ``period of validity'' will be recorded for each state, and essentially defined by the timestamps
-of transitioning into a particular state and leaving it for the next state
-
-\item If the state transition is due to application of a manufacturing step, a specific test or some other procedure
-the nature and the parameters of such procedure must be recorded in the system and be \textit{uniquely identifiable}.
-
-\item The complete set of state transitions (\ref{states}) of a component forms its lifecycle. These may
-evolve changing the composition, physical characteristics, location, and associated documentation.
-The system must provide adequate means to manage the component lifecycle, including its
-testing and QC, \textit{evolving documentation and additional metrics collected after its deployment}
-
-\end{itemize}
-
-
-\subsection{Aggregate Evolution}
+\subsection{Evolution of Aggregate Components}
 \label{evolution}
 Consider the use case where a particular component within an aggregation needs to be replaced,
 such as a failed ASIC installed on a board. This process can be modeled in at least two ways:
@@ -157,77 +146,13 @@ need to be defined for optimal management of the construction process.
 
 
 
-\section{Component Location and Ownership}
+\subsection{Component Location and Ownership}
 
 We will use the concept of the \textit{functional position} introduced in \cite{atlasequipmentdb}, which refers
-to a physical position of a component specific to its function and which cannot be moved. We put forth the
-following requirements in this area:
-\begin{itemize}
-
-\item The  the geographical location and the functional position of the item (if applicable) constitute an integral part of its \textit{state}
-
-\item The current ownership of the item constitute an integral part of its \textit{state}
-
-\item It must be possible to describe the geographical location and functional position of the item with an appropriate
-degree of granularity e.g.\,down to a building, room, rack, board, socket etc
-
-\end{itemize}
-
-\section{Connectivity Requirements}
-To provide information on expected and actual assembly of components
-the following is required:
-
-\begin{itemize}
-
-\item The \textit{expected} or \textit{functional position} connectivity shall be
- modeled for both physical and electrical relationships
-
-\item The \textit{actual} or \textit{as-built} or \textit{as-found} physical and electrical
-connectivity shall be modeled in terms that are relative to the expectation
-
-\item The \textit{connectivity} as described in the system will be modeled according to the \textit{state and state transition}
-concept as set forth in \ref{states} so it will be subject to the ``history'' requirement as defined in \ref{history}
- 
-\end{itemize}
-
-
-\section{Interfaces}
-
-\subsection{Network and Web}
-
-The database will be required to have a variety of interfaces as dictated by its applications e.g.
-
-\begin{itemize}
-
-\item Web interface for operators and managers, which will effectively create a full-fledged information system
-
-\item Other network-based interfaces, including command-line interface which will allow automation (such as scripting) of operations
-and integration of various production processes
-
-\end{itemize}
-
-
-
-\subsection{Interfaces for the Component Lifecycle Management}
-As an example, there are cases like the CE QC and other test data where the metrics thus collected form a part of the
-initial calibrations parameters. For this reason, appropriate interfaces must be created to ensure
-reliable transfer of such data across the systems. In order to evaluate the performance history and condition of a particular
-electronic component it must be possible to get access to subsequent iterations
-of the calibration data as well, i.e.\,to provide access to data sources outside of the hardware database itself.
-
-\subsection{Authentication/Authorization}
-To properly manage the component lifecycle and a variety of other information presented in the database it will be necessary
-to integrate with a role-based authentication/authorization system e.g\, a site SSO.
-
-\subsection{Industrial ID Systems and Mobile Platforms}
-
-The DUNE Hardware Database will have the functionality for integration with barcode and QR scanners to facilitate
-all stages of the construction process wherever such devices are available. These do not serve as a substitute to the
-unique component ID described above but are complementary to it.
-
-When testing large-scale components of the DUNE experiment and also in the installation stage
-it may become necessary to use mobile devices (tablets, scanners etc) in the field to feed information to the database
-and also to read data from the database. Such interfaces must be included in the design.
+to a physical position of a component specific to its function and which cannot be moved. It is complementary
+to the component geographic location. Ownership refers to the entity who is assigned custody of the item
+and is authorized to perform specific actions relate to the item. We note that the geographical location,
+functional position and ownership of an item are an integral part of its state.
 
 \section{Summary of Functional Requirements}
 
@@ -235,19 +160,21 @@ and also to read data from the database. Such interfaces must be included in the
 \subsection{The Unique ID Requirement}
 
 To make it possible to create and evolve the hierarchical description of DUNE along the lines described above
-we postulate the following requirement:
+(\ref{graph}) we propose the following requirement:
 
 \begin{itemize}
 
 \item Every component used in DUNE ---  either atomic or an aggregation --- needs to be \textit{uniquely identifiable} in a way that allows
-creation of any type of associations of components
+creation of any type of aggregate of components
+
+\item To make this possible, the unique identifiers in this context should be distinct from the manufacturers' and other ad hoc IDs.
+At the same time the unque IDs \textit{shall be associated} with the manufacturers' and other ad hoc IDs in the database
 
 \end{itemize}
 
 
 \noindent Note that the above requirement is crucial to allow for the eventual evolution of DUNE as it undergoes construction and installation.
-New aggregations can thus be created where necessary. The unique identifiers in this context are distinct from the manufacturers' and other ad hoc IDs.
-At the same time the unque IDs \textit{are associated} with the manufacturers' and other ad hoc IDs in the database.
+New aggregations can thus be created where necessary. 
 
 
 \subsection{The Traceability Requirement}
@@ -256,7 +183,7 @@ It must be possible, given the ID (and perhaps other attributes or references of
 to identify it in documents such as technical drawings, schematics and any other documentation for QC and installation.
 For example, given the component ID it must be possible to identify and retrieve a document describing the relevant QC
 procedures. It is implied that the exact provenance (e.g.\,the manufacturer) of each component must be recorded, and
-queries based on such attributes must be enabled.
+queries based on such attributes must be possible.
 
 % comment by Jim Stewart:
 % I think an additional requirement is traceability. You need from any number to find the drawing where it
@@ -273,47 +200,101 @@ To ensure the functionality of the database we propose the following requirement
 ensure successful manufacture, QC, delivery, assembly, installation, commissioning
 and operation and maintenance of DUNE, and also document possible failures in any of these steps
 
-\item such information will be specific to each component class (\ref{classification}) in any of its possible states
+\item such information will be specific to each \textit{component class} in any of its possible states %(\ref{classification}) 
 
 \end{itemize}
+
+
+\subsection{Record of State Transitions Requirements}
+\label{history}
+\begin{itemize}
+
+\item History: a complete history of state transitions of a component  preserved in the database (where applicable)
+
+\item Timelime: a ``period of validity'' will be recorded for each state, and essentially defined by the timestamps
+of transitioning into a particular state and leaving it for the next state
+
+\item If the state transition is due to application of a manufacturing step, a specific test or some other procedure
+the nature and the parameters of such procedure must be recorded in the system and be \textit{uniquely identifiable}.
+
+\item The complete set of state transitions (\ref{states}) of a component forms its lifecycle. These may
+evolve changing the composition, physical characteristics, location, and associated documentation.
+The system must provide adequate means to manage the component lifecycle, including its
+testing and QC, \textit{evolving documentation and additional metrics collected after its deployment}
+
+\end{itemize}
+
+%\subsection{Component Location and Ownership Requirements}
+
+%We will use the concept of the \textit{functional position} introduced in \cite{atlasequipmentdb}, which refers
+%to a physical position of a component specific to its function and which cannot be moved. We put forth the
+%following requirements in this area:
+
+%\begin{itemize}
+%\item The  the geographical location and the functional position of the item (if applicable) constitute an integral part of its \textit{state}
+%\item The current ownership of the item constitute an integral part of its \textit{state}
+%\item It must be possible to describe the geographical location and functional position of the item with an appropriate
+%degree of granularity e.g.\,down to a building, room, rack, board, socket etc
+%\end{itemize}
+
 
 %\noindent Now let us consider these requirements in more detail.
 
-\subsection{Old Requirements}
+\subsection{Connectivity Requirements}
+To provide information on expected and actual assembly of components the following is required:
 
 \begin{itemize}
 
-\item Ability to handle both atomic components and aggregation type components
+\item The \textit{expected} or \textit{functional position} connectivity shall be
+ modeled for both physical and electrical relationships
 
-\item Flexibility in the component definition e.g. the composition, structure and level of aggrregation
+\item The \textit{actual} or \textit{as-built} or \textit{as-found} physical and electrical
+connectivity shall be modeled in terms that are relative to the expectation
 
-\item Unique identification of each component in the context presented above
+\item The \textit{connectivity} as described in the system will be modeled according to the \textit{state and state transition}
+concept as set forth in \ref{states} so it will be subject to the ``history'' requirement as defined in \ref{history}
+ 
+\end{itemize}
 
-\item Completeness: all information should be available directly in the database or by reference to a reliable external source
-(example: detailed ASIC QC data)
+\subsection{Interface Requirements}
 
-\item Treaceability: provision of references to a variety of technical documentation for a particular component
+\subsubsection{Network and Web}
 
-\item History
+The database will be required to have a variety of interfaces as dictated by its applications e.g.
 
-\item Connectivity
+\begin{itemize}
 
-\item Complete audit trail for each state transition/procedure
+\item Web interface for operators and managers, which will effectively create a full-fledged information system
 
-\item Auth/Auth
-
-\item Component versioning capability (if such capability is required by choosing the second option in (\ref{evolution})
-
-\item Complete location/ownership information record as part of the state
-
-\item Provisons for integration with industrial automated identification methods such as barcodes, QR codes etc
-
-\item A set of interfaces to allow the creation of a user-friendly information system as well integration of the production, testing, QC,
-logistics and installation procedures into the system
-
-\item Interfaces to the Conditions and Calibration databases as well as document handling systems
+\item Other network-based interfaces, including command-line interface which will allow automation (such as scripting) of operations
+and integration of various production processes
 
 \end{itemize}
+
+
+\subsubsection{Interfaces for the Component Lifecycle Management}
+As an example, there are cases like the CE QC and other test data where the metrics thus collected form a part of the
+initial calibrations parameters. For this reason, appropriate interfaces must be created to ensure
+reliable transfer of such data across the systems. In order to evaluate the performance history and condition of a particular
+electronic component it must be possible to get access to subsequent iterations
+of the calibration data as well, i.e.\,to provide access to data sources outside of the hardware database itself.
+
+\subsubsection{Authentication/Authorization}
+To properly manage the component lifecycle and a variety of other information presented in the database it will be necessary
+to integrate with a role-based authentication/authorization system e.g\, a site SSO.
+
+\subsubsection{Industrial ID Systems and Mobile Platforms}
+
+The DUNE Hardware Database will have the functionality for integration with barcode and QR scanners to facilitate
+all stages of the construction process wherever such devices are available. These do not serve as a substitute to the
+unique component ID described above but are complementary to it.
+
+When testing large-scale components of the DUNE experiment and also in the installation stage
+it may become necessary to use mobile devices (tablets, scanners etc) in the field to feed information to the database
+and also to read data from the database. Such interfaces must be included in the design.
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
 \section{Reusability}
@@ -413,17 +394,16 @@ components. The system was used in building two subsystem of the protoDUNE-SP ex
 
 \item \textbf{Pros}
 \begin{itemize}
-\item A well understood system proven in previous experiments, with good support and expertise at FNAL
+\item A well understood system proven in previous experiments including protoDUNE-SP, with good support and expertise at FNAL
 \item Supports many of the requirements listed above
 \end{itemize}
 
 \item \textbf{Cons}
 \begin{itemize}
-\item A rigid schema not well suited for evolution (e.g.\,QC procedures and logistics essentially hardcoded in the schemas
-created for individual components)
-\item Still lacking many features necessary to meet the DUNE requirements, lack of integration with other components
-modeled in the same framework and with external systems
-\item Current version of the Web UI is not yet well suited to support the functionality to meet the requirements discussed here
+\item A somewhat rigid schema not well suited for evolution (e.g.\,QC procedures and logistics essentially hardcoded in the schemas
+created for individual components, some schemas de-normalized)
+\item Still lacking a few features necessary to meet the DUNE requirements, no solid support for the component lifecycle
+\item Current version of the Web UI is not well suited to support the functionality to meet the requirements discussed here
 \end{itemize}
 
 \item \textbf{Reuse strategy}
@@ -490,3 +470,29 @@ are deferred till a later time.
 
 
 \end{document}
+
+
+%\subsection{Old Requirements}
+%\begin{itemize}
+%\item Ability to handle both atomic components and aggregation type components
+%\item Flexibility in the component definition e.g. the composition, structure and level of aggrregation
+%\item Unique identification of each component in the context presented above
+%\item Completeness: all information should be available directly in the database or by reference to a reliable external source
+%(example: detailed ASIC QC data)
+%\item Treaceability: provision of references to a variety of technical documentation for a particular component
+%\item History
+%\item Connectivity
+%\item Complete audit trail for each state transition/procedure
+%\item Auth/Auth
+%\item Component versioning capability (if such capability is required by choosing the second option in (\ref{evolution})
+%\item Complete location/ownership information record as part of the state
+%\item Provisons for integration with industrial automated identification methods such as barcodes, QR codes etc
+%\item A set of interfaces to allow the creation of a user-friendly information system as well integration of the production, testing, QC,
+%logistics and installation procedures into the system
+%\item Interfaces to the Conditions and Calibration databases as well as document handling systems
+%\end{itemize}
+
+
+
+
+
