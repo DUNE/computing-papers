@@ -33,20 +33,19 @@
 
 
 \abstract{
-The DUNE Collaboration has successfully implemented and currently operates
+The DUNE Collaboration currently operates
 an experimental program based at CERN which includes a beam test and an extended
-cosmic ray run of two large-scale prototypes of the DUNE Far Detector.
-The volume of data collected by the protoDUNE-SP (the single-phase
-Liquid Argon TPC prototype) amounts to $\sim$3PB and the sustained rate
-of data sent to mass storage is O(100) MB/s.  A fraction of the data stream
-is captured by the protoDUNE Prompt Processing System (p3s) which is optimized
+cosmic ray run of two large-scale prototypes of the massive Liquid Argon Time
+Projection Chamber for the DUNE Far Detector. The volume of data collected by the single-phase prototype
+(protoDUNE-SP) amounts to $\sim$3PB and the sustained rate
+of data sent to mass storage is O(100) MB/s.  Data Quality Monitoring
+was implemented by directing a fraction of the data stream
+to the protoDUNE Prompt Processing System (p3s) which is optimized
 for continuous low-latency calculation of the vital detector metrics and various graphics
-including event displays. This system is the platform for Data Quality Monitoring in protoDUNE-SP
-and has served a crucial role throughout the life cycle of the experiment.
-We present our experience in operating the system in the CERN environment, along
-with work currently underway to make the system more scalable, resilient and
-to simplify system recovery procedures in preparation for the second beam
-run of protoDUNE-SP foreseen after the Long Shutdown 2 of the LHC.
+including event displays. It served a crucial role throughout the life cycle of the
+experiment. We present our experience in leveraging the CERN computing
+environment and operating the system over an extended period of time, while
+adapting to evolving requirements and computing platform.
 }
 %
 \maketitle
@@ -54,13 +53,17 @@ run of protoDUNE-SP foreseen after the Long Shutdown 2 of the LHC.
 \section{Introduction}
 
 \label{sec:intro}
-The \pd-SP experiment is designed to study a large-scale prototype of the single-phase version of
-the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one of
-the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
-Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
-in the CERN North Experimental Hall and is tested utilizing a dedicated beam line from the CERN SPS
-accelerator complex. The run plan also includes a large number of cosmic ray triggers.
-Commisioning of the detector took place in September of 2018.
+The aim of the \pd-SP experiment  \cite{spanu} is a detailed study of a large-scale prototype
+of the single-phase Liquid Argon Time Projection Chamber (LArTPC) to be used the
+the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam data in
+2018 and cosmic ray data throughout 2019. The nature of the experiment required a versatile
+Data Quality Monitoring (DQM) system capable of performing complex calculations on
+a few minutes time scale as well as preserve the results (inluding various types of graphics
+and tabulated data) in an easily accessible form and over an extended period of time.
+In order to support this capability a \textit{prompt processing system} was designed, deployed
+and operated for 3 years \cite{eps}. Its design proved flexible enough to quickly adapt to
+different hardware platforms and computational payloads.
+
 
 
 \section{Section title}
@@ -121,23 +124,23 @@ number & number & number \\\hline
 
 \begin{thebibliography}{99}
 
+\bibitem{spanu}
+M. Spanu
+\emph{The status and results from ProtoDUNE Single Phase}
+IOP Conf. Series: Journal of Physics: Conf. Series \textbf{1312} (2019) 012003
+
 \bibitem{cdrVol1}
 R. Acciarri et al.
 \emph{Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report Volume 1: The LBNF and DUNE Projects}.\\ ~e-Print: arXiv:\textbf{1601.05471}
- %DUNE CDR Vol 1 -- The LBNF and DUNE Projects.~e-Print: arXiv:1601.05471
-%\url{http://arxiv.org/abs/1601.05471}
+
 
 \bibitem{cdrVol4}
 R. Acciarri et al.
 \emph{Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report, Volume 4: The DUNE Detectors at LBNF}.\\~e-Print: arXiv:\textbf{1601.02984}
-%\url{http://arxiv.org/abs/1601.02984}
 
 \bibitem{eps} M.Potekhin et al. \emph{The protoDUNE-SP experiment and its prompt
 processing system}. Proceedings of Science (EPS-HEP2017) 513
 
-%\bibitem{uboone}
-%B. Jones et al.  \emph{The Status of the MicroBooNE Experiment.~J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013,
-%doi:10.1088/1742-6596/408/1/012028
 
 
 \bibitem{sam}
