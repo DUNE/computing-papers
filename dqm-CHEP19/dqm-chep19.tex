@@ -40,8 +40,24 @@
            Last address
           }
 
-\abstract{%
-  Insert your english abstract here.
+\abstract{
+The DUNE Collaboration has successfully implemented and currently operates
+an experimental program based at CERN which includes a beam test and an extended
+cosmic ray run of two large-scale prototypes of the DUNE Far Detector.
+The volume of data already collected by the protoDUNE-SP (the single-phase
+Liquid Argon TPC prototype) amounts to approximately 3PB and the sustained rate
+of data sent to mass storage is of the order of O(100) MB/s. In addition to this
+data being committed to mass storage and processed in the Grid environment, a small
+fraction of it is captured by the protoDUNE Prompt Processing System (p3s).
+The p3s is optimized for continuous low-latency calculation of the vital detector
+metrics and parameters as well as the output rendered as event display images.
+This system is the platform for Data Quality Monitoring in protoDUNE-SP and
+has served a crucial role starting from the commissioning of the apparatus and
+throughout its operation in 2018-2019, which continues at the time of writing.
+We present our experience in operating the system in the CERN environment, along
+with work currently underway to make the system more scalable, resilient and
+to simplify system recovery procedures in preparation for the second beam
+run of protoDUNE-SP foreseen after the Long Shutdown 2 of the LHC.
 }
 %
 \maketitle
@@ -62,7 +78,7 @@ For one-column wide figures use syntax of figure~\ref{fig-1}
 % Use the relevant command for your figure-insertion program
 % to insert the figure file.
 \centering
-\includegraphics[width=1cm,clip]{tiger}
+\includegraphics[width=1cm,clip]{figures/dqm_purmon_20190910_1.png}
 \caption{Please write your figure caption here}
 \label{fig-1}       % Give a unique label
 \end{figure}
@@ -84,7 +100,7 @@ For figure with sidecaption legend use syntax of figure
 % to insert the figure file.
 \centering
 \sidecaption
-\includegraphics[width=5cm,clip]{tiger}
+\includegraphics[width=5cm,clip]{figures/dqm_purmon_20190910_1.png}
 \caption{Please write your figure caption here}
 \label{fig-3}       % Give a unique label
 \end{figure}
