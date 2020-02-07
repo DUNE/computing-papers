@@ -64,7 +64,22 @@ In order to support this capability a \textit{prompt processing system} was desi
 and operated for 3 years \cite{eps}. Its design proved flexible enough to quickly adapt to
 different hardware platforms and computational payloads.
 
+\section{Outline of the System Design}
+The following is a brief summary of the DQM system design features in \pd-SP \cite{chep18}:
+\begin{itemize}
 
+\item A high degree of automation and data-driven approach: creation of various computational
+payloads is triggered by arrival of new data
+
+\item Complete decoupling of DQM and the DAQ, which allowed for stable and reliable operation of
+the latter while being able to make frequent updates to the DQM code and adding new types of
+calculations, as well as adjusting operating parameters of the system
+
+\item Separation of the workload management functionality (prompt processing) from
+managing and navigating the content created by the jobs running in the system, which provided
+optimal end-user experience
+
+\end{itemize}
 
 \section{Section title}
 \label{sec-1}
@@ -141,7 +156,9 @@ R. Acciarri et al.
 \bibitem{eps} M.Potekhin et al. \emph{The protoDUNE-SP experiment and its prompt
 processing system}. Proceedings of Science (EPS-HEP2017) 513
 
-
+\bibitem{chep18} M.Potekhin et al. \emph{The Prompt Processing System
+and Data Quality Monitoring in the protoDUNE-SP Experiment}
+EPJ Web of Conferences \textbf{214}, 01026 (2019)
 
 \bibitem{sam}
 R. A. Illingworth \emph{A data handling system for modern and future Fermilab experiments.~J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014,
