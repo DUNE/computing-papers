@@ -1,59 +1,48 @@
-%%%%%%%%%%%%%%%%%%%%%%% file template.tex %%%%%%%%%%%%%%%%%%%%%%%%%
-%
-% This is a template file for Web of Conferences Journal
-%
-% Copy it to a new file with a new name and use it as the basis
-% for your article
-%
-%%%%%%%%%%%%%%%%%%%%%%%%%% EDP Science %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%
+%%% CHEP 2019 protoDUNE-SP DQM evolution paper
+
 %%%\documentclass[option]{webofc}
 %%% "twocolumn" for typesetting an article in two columns format (default one column)
-%
+
+
 \documentclass{webofc}
 \usepackage[varg]{txfonts}   % Web of Conferences font
+
 %
 % Put here some packages required or/and some personnal commands
 %
-%
+
+\usepackage{xspace}
+\usepackage{tabularx}
+
+\newcommand{\pd}{protoDUNE\xspace}
+\newcommand{\filesize}{8\,GB\xspace}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%% BEGIN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{document}
 %
-\title{Insert your title here}
-%
-% subtitle is optionnal
-%
-%%%\subtitle{Do you have a subtitle?\\ If so, write it here}
+\title{Evolution of the Data Quality Monitoring and Prompt Processing System in the protoDUNE-SP experiment}
 
-\author{\firstname{First author} \lastname{First author}\inst{1,3}\fnsep\thanks{\email{Mail address for first
-    author}} \and
-        \firstname{Second author} \lastname{Second author}\inst{2}\fnsep\thanks{\email{Mail address for second
-             author if necessary}} \and
-        \firstname{Third author} \lastname{Third author}\inst{3}\fnsep\thanks{\email{Mail address for last
-             author if necessary}}
-        % etc.
+
+\author{
+\firstname{Maxim} 
+\lastname{Potekhin}\inst{1}\fnsep\thanks{\email{potekhin@bnl.gov}}, \it{on behalf of the DUNE Collaboration}
 }
 
-\institute{Insert the first address here 
-\and
-           the second here 
-\and
-           Last address
-          }
+\institute{Brookhaven National Laboratory, Upton, NY11973, USA}
+
 
 \abstract{
 The DUNE Collaboration has successfully implemented and currently operates
 an experimental program based at CERN which includes a beam test and an extended
 cosmic ray run of two large-scale prototypes of the DUNE Far Detector.
-The volume of data already collected by the protoDUNE-SP (the single-phase
-Liquid Argon TPC prototype) amounts to approximately 3PB and the sustained rate
-of data sent to mass storage is of the order of O(100) MB/s. In addition to this
-data being committed to mass storage and processed in the Grid environment, a small
-fraction of it is captured by the protoDUNE Prompt Processing System (p3s).
-The p3s is optimized for continuous low-latency calculation of the vital detector
-metrics and parameters as well as the output rendered as event display images.
-This system is the platform for Data Quality Monitoring in protoDUNE-SP and
-has served a crucial role starting from the commissioning of the apparatus and
-throughout its operation in 2018-2019, which continues at the time of writing.
+The volume of data collected by the protoDUNE-SP (the single-phase
+Liquid Argon TPC prototype) amounts to $\sim$3PB and the sustained rate
+of data sent to mass storage is O(100) MB/s.  A fraction of the data stream
+is captured by the protoDUNE Prompt Processing System (p3s) which is optimized
+for continuous low-latency calculation of the vital detector metrics and various graphics
+including event displays. This system is the platform for Data Quality Monitoring in protoDUNE-SP
+and has served a crucial role throughout the life cycle of the experiment.
 We present our experience in operating the system in the CERN environment, along
 with work currently underway to make the system more scalable, resilient and
 to simplify system recovery procedures in preparation for the second beam
@@ -63,8 +52,17 @@ run of protoDUNE-SP foreseen after the Long Shutdown 2 of the LHC.
 \maketitle
 %
 \section{Introduction}
-\label{intro}
-Your text comes here. Separate text sections with
+
+\label{sec:intro}
+The \pd-SP experiment is designed to study a large-scale prototype of the single-phase version of
+the Liquid Argon Time Projection Chamber (LArTPC) which will eventually become one of
+the principal elements of the DUNE apparatus to be constructed at the Sanford Underground
+Research Facility \cite{cdrVol1, cdrVol4}. The prototype (CERN designation NP04) is located
+in the CERN North Experimental Hall and is tested utilizing a dedicated beam line from the CERN SPS
+accelerator complex. The run plan also includes a large number of cosmic ray triggers.
+Commisioning of the detector took place in September of 2018.
+
+
 \section{Section title}
 \label{sec-1}
 For bibliography use \cite{RefJ}
@@ -120,24 +118,67 @@ number & number & number \\\hline
 % Or use
 \vspace*{5cm}  % with the correct table height
 \end{table}
-%
-% BibTeX or Biber users please use (the style is already called in the class, ensure that the "woc.bst" style is in your local directory)
-% \bibliography{name or your bibliography database}
-%
-% Non-BibTeX users please use
-%
-\begin{thebibliography}{}
-%
-% and use \bibitem to create references.
-%
-\bibitem{RefJ}
-% Format for Journal Reference
-Journal Author, Journal \textbf{Volume}, page numbers (year)
-% Format for books
-\bibitem{RefB}
-Book Author, \textit{Book title} (Publisher, place, year) page numbers
-% etc
+
+\begin{thebibliography}{99}
+
+\bibitem{cdrVol1}
+R. Acciarri et al.
+\emph{Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report Volume 1: The LBNF and DUNE Projects}.\\ ~e-Print: arXiv:\textbf{1601.05471}
+ %DUNE CDR Vol 1 -- The LBNF and DUNE Projects.~e-Print: arXiv:1601.05471
+%\url{http://arxiv.org/abs/1601.05471}
+
+\bibitem{cdrVol4}
+R. Acciarri et al.
+\emph{Long-Baseline Neutrino Facility (LBNF) and Deep Underground Neutrino Experiment (DUNE) Conceptual Design Report, Volume 4: The DUNE Detectors at LBNF}.\\~e-Print: arXiv:\textbf{1601.02984}
+%\url{http://arxiv.org/abs/1601.02984}
+
+\bibitem{eps} M.Potekhin et al. \emph{The protoDUNE-SP experiment and its prompt
+processing system}. Proceedings of Science (EPS-HEP2017) 513
+
+%\bibitem{uboone}
+%B. Jones et al.  \emph{The Status of the MicroBooNE Experiment.~J. Phys.: Conf. Series.} Vol.\textbf{408}. IOP Publishing, 2013,
+%doi:10.1088/1742-6596/408/1/012028
+
+
+\bibitem{sam}
+R. A. Illingworth \emph{A data handling system for modern and future Fermilab experiments.~J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014,
+doi:10.1088/1742-6596/513/3/032045
+
+\bibitem{fts}
+A. Norman \emph{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
+
+\bibitem{castoreos}
+ L. Mascetti et al. \emph{Disk storage at CERN.~J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015,
+doi:10.1088/1742-6596/664/4/042035
+
+\bibitem{eos_role}
+S. Fuess et al. \emph{Design of the protoDUNE raw data management
+infrastructure.~J. Phys.: Conf. Series.} Vol.\textbf{898}. IOP Publishing, 2017,
+doi:10.1088/1742-6596/898/6/062036
+
+%\bibitem{xrootd}
+%L. Bauerdick et al. \emph{Using Xrootd to Federate Regional Storage.~J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012,
+%doi:10.1088/1742-6596/396/4/042009
+
+\bibitem{panda}
+T. Maeno et al. \emph{Overview of ATLAS PanDA Workload Management.~J. Phys.: Conf. Series.} Vol.\textbf{331}. IOP Publishing, 2011,
+doi:10.1088/1742-6596/331/7/072024
+
+
+
+\bibitem{dirac}
+A. Casajus et al.  \emph{DIRAC Pilot Framework and the DIRAC
+Workload Management System.~J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010,
+doi:10.1088/1742-6596/219/6/062049
+
+\bibitem{django}
+N. George \emph{Mastering Django: Core. The Complete Guide to Django 1.8 LTS}~ GNW Independent Publishing, ISBN: 099461683X
+
+
 \end{thebibliography}
+
+
+
 
 \end{document}
 
