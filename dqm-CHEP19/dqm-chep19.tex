@@ -51,12 +51,12 @@ adapting to evolving requirements and computing platform.
 \maketitle
 %
 \section{Introduction}
-
 \label{sec:intro}
+
 The aim of the \pd-SP experiment  \cite{spanu} is a detailed study of a large-scale prototype
 of the single-phase Liquid Argon Time Projection Chamber (LArTPC) to be used the
 the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam data in
-2018 and cosmic ray data throughout 2019. The nature of the experiment required a versatile
+2018 and cosmic ray data throughout 2019. The nature of the experiment requires a versatile
 Data Quality Monitoring (DQM) system capable of performing complex calculations on
 a few minutes time scale as well as preserve the results (inluding various types of graphics
 and tabulated data) in an easily accessible form and over an extended period of time.
@@ -65,19 +65,37 @@ and operated for 3 years \cite{eps}. Its design proved flexible enough to quickl
 different hardware platforms and computational payloads.
 
 \section{Outline of the System Design}
-The following is a brief summary of the DQM system design features in \pd-SP \cite{chep18}:
+\label{sec:outline}
+
+The following is a summary of the most important features of the \pd-SP DQM system  \cite{chep18}:
 \begin{itemize}
 
-\item A high degree of automation and data-driven approach: creation of various computational
-payloads is triggered by arrival of new data
+\item A high degree of automation and data-driven workflow
+%: creation of various computational payloads is triggered by arrival of new data
 
-\item Complete decoupling of DQM and the DAQ, which allowed for stable and reliable operation of
+\item Complete decoupling of DQM and the DAQ, which allows for stable and reliable operation of
 the latter while being able to make frequent updates to the DQM code and adding new types of
-calculations, as well as adjusting operating parameters of the system
+software modules (``payloads'') when necessary
+%, as well as adjusting operating parameters of the system
 
-\item Separation of the workload management functionality (prompt processing) from
-managing and navigating the content created by the jobs running in the system, which provided
-optimal end-user experience
+\item Separation of the workload management functionality (``prompt processing'') from
+indexing and navigation of the content created by the DQM  jobs (``content service''), which provides clean
+interface and optimal end-user experience; such separation is achieved by creating two
+distinct Web services
+
+\item A pilot-based framework inspired by PanDA and Dirac \cite{panda,dirac}
+which minimizes the latency of job submission and provides a layer of abstraction of the computing resources
+%, which in turn simplifies deployment on a variety of cluster environments
+
+\item Utilization of an indistry-standard and proven Web application framework (Django)\cite{django},
+with the applications hosted by Apache Web servers while utilzing the PostgreSQL database
+back-end
+
+\item Self-describing DQM data which allows automatic and consistent generation of Web pages
+by the content service
+for each type of DQM applications without changes to the server code; this is achieved by the
+requirement that DQM jobs produce a peice of metadata (a JSON file) which completely
+describes their output dataset and the logic of its navigation
 
 \end{itemize}
 
@@ -160,6 +178,19 @@ processing system}. Proceedings of Science (EPS-HEP2017) 513
 and Data Quality Monitoring in the protoDUNE-SP Experiment}
 EPJ Web of Conferences \textbf{214}, 01026 (2019)
 
+\bibitem{django}
+N. George \emph{Mastering Django: Core. The Complete Guide to Django 1.8 LTS}~ GNW Independent Publishing, ISBN: 099461683X
+
+\bibitem{panda}
+T. Maeno et al. \emph{Overview of ATLAS PanDA Workload Management.~J. Phys.: Conf. Series.} Vol.\textbf{331}. IOP Publishing, 2011,
+doi:10.1088/1742-6596/331/7/072024
+
+
+\bibitem{dirac}
+A. Casajus et al.  \emph{DIRAC Pilot Framework and the DIRAC
+Workload Management System.~J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010,
+doi:10.1088/1742-6596/219/6/062049
+
 \bibitem{sam}
 R. A. Illingworth \emph{A data handling system for modern and future Fermilab experiments.~J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014,
 doi:10.1088/1742-6596/513/3/032045
@@ -176,23 +207,6 @@ S. Fuess et al. \emph{Design of the protoDUNE raw data management
 infrastructure.~J. Phys.: Conf. Series.} Vol.\textbf{898}. IOP Publishing, 2017,
 doi:10.1088/1742-6596/898/6/062036
 
-%\bibitem{xrootd}
-%L. Bauerdick et al. \emph{Using Xrootd to Federate Regional Storage.~J. Phys.: Conf. Series.} Vol.\textbf{396}. IOP Publishing, 2012,
-%doi:10.1088/1742-6596/396/4/042009
-
-\bibitem{panda}
-T. Maeno et al. \emph{Overview of ATLAS PanDA Workload Management.~J. Phys.: Conf. Series.} Vol.\textbf{331}. IOP Publishing, 2011,
-doi:10.1088/1742-6596/331/7/072024
-
-
-
-\bibitem{dirac}
-A. Casajus et al.  \emph{DIRAC Pilot Framework and the DIRAC
-Workload Management System.~J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010,
-doi:10.1088/1742-6596/219/6/062049
-
-\bibitem{django}
-N. George \emph{Mastering Django: Core. The Complete Guide to Django 1.8 LTS}~ GNW Independent Publishing, ISBN: 099461683X
 
 
 \end{thebibliography}
