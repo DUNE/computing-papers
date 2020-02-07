@@ -1,9 +1,4 @@
-# CHEP2019 contributon
+# Evolution of the Data Quality Monitoring and Prompt Processing System in the protoDUNE-SP experiment
 
-
-Thanks for visiting this page
-
-The abstract has been accepted as a poster presentation at CHEP 2019.
-The poster PDF has now been created.
-Please send your comments to Maxim (potekhin@bnl.gov).
+This repository contains materials for the poster presentation at CHEP 2019, and subsequent paper to be published in the proceedings.
 
