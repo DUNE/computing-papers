@@ -67,13 +67,22 @@ different hardware platforms and computational payloads.
 \section{Outline of the System Design}
 \label{sec:outline}
 
-The following is a summary  of the \pd-SP DQM system  design features\cite{chep18}:
+A predefined (and configurable) fraction of the data written to a local buffer
+by the  Data Acquisition (DAQ) system is then transferred to a dedicated space
+in the  CERN EOS disk storage  \cite{castoreos} by an instance of the ``Fermi-FTS''
+data handling system \cite{fts}. Arrival of new data is detected by polling the
+corresponsing directory in EOS and triggers creation of jobs records in the
+prompt processing system database, forming a queue. The prompt processing system
+then nmatches jobs to the available pilot jobs (running asynchronously) and monitors
+their execution. Job outputs are automatically catalogued in the database and
+are made available to the users via a Web interface.
+The following is a summary  of the \pd-SP prompt processing/DQM system design features\cite{chep18}:
 \begin{itemize}
 
 \item A high degree of automation and a data-driven workflow
 %: creation of various computational payloads is triggered by arrival of new data
 
-\item A complete decoupling of the DQM and the Data Acquisition (DAQ) systems, which allows
+\item A complete decoupling of the DQM and the DAQ systems, which allows
 for stable and reliable operation of the latter while being able to make frequent updates to the
 DQM code and adding new types of software modules (``payloads'') when necessary
 %, as well as adjusting operating parameters of the system
@@ -98,6 +107,16 @@ requirement that DQM jobs produce a peice of metadata (a JSON file) which comple
 describes their output dataset and the logic of its navigation
 
 \end{itemize}
+\noindent
+A high-or one-column wide figures use syntax of figure~\ref{dqm-diagram}
+\begin{figure}[h]
+
+\centering
+\includegraphics[width=0.9\textwidth,clip]{figures/dqm-p3s-diagram.png}
+\caption{Please write your figure caption here}
+\label{dqm-diagram}       % Give a unique label
+\end{figure}
+
 
 \section{Section title}
 \label{sec-1}
@@ -174,6 +193,14 @@ R. Acciarri et al.
 \bibitem{eps} M.Potekhin et al. \emph{The protoDUNE-SP experiment and its prompt
 processing system}. Proceedings of Science (EPS-HEP2017) 513
 
+
+\bibitem{castoreos}
+L. Mascetti et al. \emph{Disk storage at CERN.~J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015,
+doi:10.1088/1742-6596/664/4/042035
+
+\bibitem{fts}
+A. Norman \emph{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
+
 \bibitem{chep18} M.Potekhin et al. \emph{The Prompt Processing System
 and Data Quality Monitoring in the protoDUNE-SP Experiment}
 EPJ Web of Conferences \textbf{214}, 01026 (2019)
@@ -191,16 +218,7 @@ A. Casajus et al.  \emph{DIRAC Pilot Framework and the DIRAC
 Workload Management System.~J. Phys.: Conf. Series.} Vol.\textbf{219}. IOP Publishing, 2010,
 doi:10.1088/1742-6596/219/6/062049
 
-\bibitem{sam}
-R. A. Illingworth \emph{A data handling system for modern and future Fermilab experiments.~J. Phys.: Conf. Series.} Vol.\textbf{513}. IOP Publishing, 2014,
-doi:10.1088/1742-6596/513/3/032045
 
-\bibitem{fts}
-A. Norman \emph{The Fermilab File Transfer System}.~e-Print: FNAL CD-DocDB-5412
-
-\bibitem{castoreos}
- L. Mascetti et al. \emph{Disk storage at CERN.~J. Phys.: Conf. Series.} Vol.\textbf{664}. IOP Publishing, 2015,
-doi:10.1088/1742-6596/664/4/042035
 
 \bibitem{eos_role}
 S. Fuess et al. \emph{Design of the protoDUNE raw data management
