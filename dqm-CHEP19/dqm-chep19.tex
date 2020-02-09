@@ -54,11 +54,11 @@ adapting to evolving requirements and computing platform.
 \label{sec:intro}
 
 The aim of the \pd-SP experiment  \cite{spanu} is a detailed study of a large-scale prototype
-of the single-phase Liquid Argon Time Projection Chamber (LArTPC) to be used the
-the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam data in
+of the massive 10kt single-phase Liquid Argon Time Projection Chamber (LArTPC) to be used
+in the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam data in
 2018 and cosmic ray data throughout 2019. The nature of the experiment requires a versatile
 Data Quality Monitoring (DQM) system capable of performing complex calculations on
-a few minutes time scale as well as preserve the results (inluding various types of graphics
+a few minutes time scale as well as preserving the results (inluding various types of graphics
 and tabulated data) in an easily accessible form and over an extended period of time.
 In order to support this capability a \textit{prompt processing system} was designed, deployed
 and operated for 3 years \cite{eps}. Its design proved flexible enough to quickly adapt to
@@ -67,15 +67,15 @@ different hardware platforms and computational payloads.
 \section{Outline of the System Design}
 \label{sec:outline}
 
-The following is a summary of the most important features of the \pd-SP DQM system  \cite{chep18}:
+The following is a summary  of the \pd-SP DQM system  design features\cite{chep18}:
 \begin{itemize}
 
-\item A high degree of automation and data-driven workflow
+\item A high degree of automation and a data-driven workflow
 %: creation of various computational payloads is triggered by arrival of new data
 
-\item Complete decoupling of DQM and the DAQ, which allows for stable and reliable operation of
-the latter while being able to make frequent updates to the DQM code and adding new types of
-software modules (``payloads'') when necessary
+\item A complete decoupling of the DQM and the Data Acquisition (DAQ) systems, which allows
+for stable and reliable operation of the latter while being able to make frequent updates to the
+DQM code and adding new types of software modules (``payloads'') when necessary
 %, as well as adjusting operating parameters of the system
 
 \item Separation of the workload management functionality (``prompt processing'') from
