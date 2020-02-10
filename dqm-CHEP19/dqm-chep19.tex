@@ -150,7 +150,7 @@ The migration largely consisted of adapting existing scripts to the new HTCondor
 environment and using the Kerberized ``acrontab'' facility to orchestrate their
 periodic execution. For the p3s and DQM servers deployed in OpenStack we made
 use of the snapshot feature to simplify recovery and to scale the services as
-needed, for example by trasnparently increasing the number of cores in a host
+needed, for example by transparently increasing the number of cores in a host
 VM while keeping the software environment intact.
 
 \subsection{The Software}
@@ -195,8 +195,11 @@ for optimal resource management. Adding new types of jobs was facilitated by two
 
 \end{itemize}
 
-\noindent Software updates and provisioning to the worker nodes were simplified by making use of
+\noindent Software updates and its provisioning to the worker nodes were simplified by making use of
 the CVMFS distribution model.
+% Over its service time t
+The system dashboard was updated with added metrics for the
+batch system, storage space and file system performance.
 
 
 
@@ -208,11 +211,20 @@ DQM data for cosmic ray track candidates}
 \label{fig:purity}
 \end{figure}
 
-\subsection{The Dashboard}
-\label{sec:dashboard}
+\subsection{Conclusions}
 
-To make it easier for operators to assess the system health at a glance the landing page of the p3s monitor was equipped
-with a dash board which eventually contained
+The \pd-SP Data Quality Monitoring system has been one one of the crucial components of the experiment.
+It demonstrated a high degree of flexibility and was quickly adapted to the changing hardware platforms and
+the evolving DQM software mainly due to the following design features:
+\begin{itemize}
+\item Pilot framework used in the workload management part of the system
+\item Standardized templates for DQM job description
+\item Transparent and reliable software updates via CVMFS
+\item Self-describing DQM data which simplified integration of new DQM job types into the sytem
+\end{itemize}
+
+\noindent It is foreseen that the system will be used in the projected Run 2 of \pd-SP and may potentially
+serve as a prototype for a DQM system in the DUNE experiment.
 
 
 
