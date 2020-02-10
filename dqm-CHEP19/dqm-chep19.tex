@@ -115,13 +115,13 @@ which completely describes their output dataset and the logic of its navigation
 \end{itemize}
 \noindent
 A conceptual diagram of the prompt processing and DQM system components
-is presented in figure~\ref{dqm-diagram}.
+is presented in figure~\ref{fig:dqm-diagram}.
 
 \begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth,clip]{figures/dqm-p3s-diagram.png}
 \caption{The protoDUNE-SP prompt processing and DQM systems}
-\label{dqm-diagram}
+\label{fig:dqm-diagram}
 \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -174,8 +174,9 @@ signal dropouts)
 \item Prompt reconstruction of cosmic ray track candidates with metrics such as
 track candidate count and hit count in various parts of the detector
 
-\item Liquid Argon purity estimations based on charge values for track candidates
-(time series stored in the database and rendered graphically in the Web UI)
+\item Liquid Argon purity estimations based on charge values for track candidates;
+time series were stored in the database and rendered graphically in the Web UI as shown in
+a screenshot in figure \ref{fig:purity}
 
 \item Signal-to-noise ratio monitoring (time series stored in the database and rendered graphically in the Web UI)
 
@@ -190,28 +191,30 @@ for optimal resource management. Adding new types of jobs was facilitated by two
 
 \item Reliance on existing job templates which required only minor adjustments
 
-\item Self-describing DQM output data simplifying integration with the content service
+\item Self-describing DQM output data simplifying integration with the content service \cite{chep18}
 
 \end{itemize}
 
 \noindent Software updates and provisioning to the worker nodes were simplified by making use of
 the CVMFS distribution model.
 
-%For tables use syntax in table~\ref{tab-1}.
-%\begin{table}
-%\centering
-%\caption{Please write your table caption here}
-%\label{tab-1}       % Give a unique label
-%% For LaTeX tables you can use
-%\begin{tabular}{lll}
-%\hline
-%first & second & third  \\\hline
-%number & number & number \\
-%number & number & number \\\hline
-%\end{tabular}
-%% Or use
-%\vspace*{5cm}  % with the correct table height
-%\end{table}
+
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.9\textwidth,clip]{figures/purity2019.png}
+\caption{Screenshot: time series of the electron lifetime in the Liquid Argon of the protoDUNE-SP TPC, based on
+DQM data for cosmic ray track candidates}
+\label{fig:purity}
+\end{figure}
+
+\subsection{The Dashboard}
+\label{sec:dashboard}
+
+To make it easier for operators to assess the system health at a glance the landing page of the p3s monitor was equipped
+with a dash board which eventually contained
+
+
 
 \begin{thebibliography}{99}
 
