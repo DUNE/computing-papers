@@ -38,7 +38,7 @@ an experimental program based at CERN which includes a beam test and an extended
 cosmic ray run of two large-scale prototypes of the massive Liquid Argon Time
 Projection Chamber for the DUNE Far Detector. The volume of data collected by the single-phase prototype
 (protoDUNE-SP) amounts to $\sim$3PB and the sustained rate
-of data sent to mass storage is O(100) MB/s.  Data Quality Monitoring
+of data sent to mass storage is O(100)\,MB/s.  Data Quality Monitoring
 was implemented by directing a fraction of the data stream
 to the protoDUNE Prompt Processing System (p3s) which is optimized
 for continuous low-latency calculation of the vital detector metrics and various graphics
@@ -60,9 +60,9 @@ in the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam d
 Data Quality Monitoring (DQM) system capable of performing complex calculations on
 a few minutes time scale as well as preserving the results (inluding various types of graphics
 and tabulated data) in an easily accessible form and over an extended period of time.
-In order to support this capability a \textit{prompt processing system} was designed, deployed
-and operated for 3 years \cite{eps}. Its design proved flexible enough to quickly adapt to
-different hardware platforms and computational payloads.
+In order to support this capability a \textit{protoDUNE prompt processing system} (p3s)
+was designed, deployed and operated for 3 years \cite{eps}. Its design proved flexible
+enough to quickly adapt to different hardware platforms and computational payloads.
 
 \section{Outline of the System Design}
 \label{sec:outline}
@@ -72,8 +72,8 @@ by the  Data Acquisition (DAQ) system is then transferred to a dedicated space
 in the  CERN EOS disk storage  \cite{castoreos} by an instance of the ``Fermi-FTS''
 data handling system \cite{fts}. Arrival of new data is detected by polling the
 corresponsing directory in EOS and triggers creation of jobs records in the
-prompt processing system database, forming a queue. The prompt processing system
-then nmatches jobs to the available pilot jobs (running asynchronously) and monitors
+p3s database, forming a queue. The p3s brokerage module
+then matches jobs to the available pilot jobs (running asynchronously) and monitors
 their execution. Job outputs are automatically catalogued in the database and
 are made available to the users via a Web interface.
 The following is a summary  of the \pd-SP prompt processing/DQM system design features\cite{chep18}:
@@ -108,21 +108,28 @@ describes their output dataset and the logic of its navigation
 
 \end{itemize}
 \noindent
-A high-or one-column wide figures use syntax of figure~\ref{dqm-diagram}
-\begin{figure}[h]
+A conceptual diagram of the prompt processing and DQM system components
+is presented in figure~\ref{dqm-diagram}.
 
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.9\textwidth,clip]{figures/dqm-p3s-diagram.png}
-\caption{Please write your figure caption here}
-\label{dqm-diagram}       % Give a unique label
+\caption{The protoDUNE-SP prompt processing and DQM systems}
+\label{dqm-diagram}
 \end{figure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{System Evolution}
 
-\section{Section title}
-\label{sec-1}
-For bibliography use \cite{RefJ}
-\subsection{Subsection title}
-\label{sec-2}
+\subsection{The Hardware Platform}
+\label{sec:hardware}
+
+The pilot-based framework used in the prompt processing system described here
+provides a lot of flexibility in managing the available computing resource. The first (test)
+ins
+
+
+
 Don't forget to give each section, subsection, subsubsection, and
 paragraph a unique label (see Sect.~\ref{sec-1}).
 
