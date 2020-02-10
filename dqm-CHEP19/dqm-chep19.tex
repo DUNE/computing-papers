@@ -91,10 +91,12 @@ for stable and reliable operation of the latter while being able to make frequen
 DQM code and adding new types of software modules (``payloads'') when necessary
 %, as well as adjusting operating parameters of the system
 
-\item A pilot-based framework inspired by PanDA and Dirac \cite{panda,dirac}
+\item A simple pilot-based framework inspired by PanDA and Dirac \cite{panda,dirac}
 which minimizes the latency of job submission and provides a layer of abstraction
 of the computing resources; a Web application coordinates the operation of ``pilot jobs''
-which in turn manage the execution of the ``payload jobs''
+which in turn manage execution of the DQM jobs defined by the user (the ``payload jobs'')
+
+\item A JSON schema for job description including job templates
 
 \item Separation of the workload management functionality  of p3s  from
 indexing and navigation of the content created by the DQM  jobs (a separate ``content service''),
@@ -106,8 +108,8 @@ with the applications hosted by Apache Web servers while utilzing the PostgreSQL
 back-end
 
 \item Self-describing DQM data which allows automatic and consistent generation of Web pages
-by the content service for each type of DQM applications without changes to the server code
- this is achieved by the requirement that DQM jobs produce a peice of metadata (a set of JSON files)
+by the content service for each type of DQM applications without changes to the server code.
+This is achieved by the requirement that DQM jobs produce metadata (a set of JSON files)
 which completely describes their output dataset and the logic of its navigation
 
 \end{itemize}
@@ -128,20 +130,72 @@ is presented in figure~\ref{dqm-diagram}.
 \subsection{The Hardware Platform}
 \label{sec:hardware}
 
-The p3s pilot-based framework provides substabtial flexibility in accessing and
+The p3s pilot-based framework provides substantial flexibility in accessing and
 managing the available computing resource. Generation of pilot jobs is external
 to the core system itself and thus can be easily adapted to a particular resource.
 One basic requirement is that the pilot jobs running on the worker nodes have
 HTTP access to the p3s server. The first (test) instance of p3s deployed
-on an \textit{ad hoc} colleciton of local machines used the parallel remote shell
-(pdsh) to manage the population of pilot jobs running on the worker nodes.
+on an \textit{ad hoc} colleciton of local machines. The parallel remote shell
+(pdsh) was used to manage population of pilot jobs running on the worker nodes.
 The next deployment was on a hardware cluster provided by the CERN
 Neutrino Platform organization \cite{platform} consisting of a few dozen
 worker nodes configured as a HTCondor cluster, and the pilots were managed
-by scripts utilizing the HTCondor batch system tools. Web services were deployed
-on two nodes which were part of the same cluster.
+by scripts utilizing the HTCondor batch system tools. Web and database
+services were deployed on two nodes which were part of the same cluster.
 
+Subsequently a decision was made to migrate the system to the CERN Central
+Services i.e.\,to host the p3s server and DQM content server on the CERN OpenStack
+VMs and utilize  the central batch facility (``lxbatch'') as the compute element.
+The migration largely consisted of adapting existing scripts to the new HTCondor
+environment and using the Kerberized ``acrontab'' facility to orchestrate their
+periodic execution. For the p3s and DQM servers deployed in OpenStack we made
+use of the snapshot feature to simplify recovery and to scale the services as
+needed, for example by trasnparently increasing the number of cores in a host
+VM while keeping the software environment intact.
 
+\subsection{The Software}
+\label{sec:software}
+
+Throught its life cycle the experiment required an evolving set of algorithms to
+be included in its DQM software, sometimes with frequent software updates.
+At various points in time the following algorithms were active:
+
+\begin{itemize}
+
+\item 2D event display (based on raw data)
+
+\item The TPC monitoring application with an extensive set of histograms at various
+levels of channel aggregation, FFT charts etc (with $\sim$1000 histograms produced
+in each application run)
+
+\item Health monitor for the Front End Electronics motherboards (e.g. for detection of
+signal dropouts)
+
+\item Prompt reconstruction of cosmic ray track candidates with metrics such as
+track candidate count and hit count in various parts of the detector
+
+\item Liquid Argon purity estimations based on charge values for track candidates
+(time series stored in the database and rendered graphically in the Web UI)
+
+\item Signal-to-noise ratio monitoring (time series stored in the database and rendered graphically in the Web UI)
+
+\item Data preparation for the 3D event display implemented on a separate server
+
+\end{itemize}
+
+\noindent System settings allowed to configure the number of jobs allocated to each job type,
+for optimal resource management. Adding new types of jobs was facilitated by two factors:
+
+\begin{itemize}
+
+\item Reliance on existing job templates which required only minor adjustments
+
+\item Self-describing DQM output data simplifying integration with the content service
+
+\end{itemize}
+
+\noindent Software updates and provisioning to the worker nodes were simplified by making use of
+the CVMFS distribution model.
 
 %For tables use syntax in table~\ref{tab-1}.
 %\begin{table}
