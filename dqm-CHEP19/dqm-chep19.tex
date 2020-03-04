@@ -53,15 +53,15 @@ adapting to evolving requirements and computing platform.
 \section{Introduction}
 \label{sec:intro}
 
-The aim of the \pd-SP experiment  \cite{spanu} is a detailed study of a large-scale prototype
-of the massive 10kt single-phase Liquid Argon Time Projection Chamber (LArTPC) to be used
+The goal of the \pd-SP experiment  \cite{spanu} is a detailed study of a large-scale prototype
+of the massive 10kt single-phase Liquid Argon Time Projection Chambers (LArTPC) to be used
 in the DUNE experiment  \cite{cdrVol1, cdrVol4}. The experiment took test beam data in
 2018 and cosmic ray data throughout 2019. The nature of the experiment requires a versatile
 Data Quality Monitoring (DQM) system capable of performing complex calculations on
 a few minutes time scale as well as preserving the results (inluding various types of graphics
 and tabulated data) in an easily accessible form and over an extended period of time.
 In order to support this capability a \textit{protoDUNE prompt processing system} (p3s)
-was designed, deployed and operated for 3 years \cite{eps}. Its design proved flexible
+was designed, deployed and operated over of a period of time of $\sim$3 years \cite{eps}. Its design proved flexible
 enough to quickly adapt to different hardware platforms and computational payloads.
 
 \section{System Design}
@@ -77,19 +77,18 @@ to available pilot jobs (running asynchronously on the worker nodes within the d
 resource) and provides the pilot with information necessary to actuate the ``payload job'' (e.g.\,as via a URL
 pointing to a script and a set of parameters). Monitoring information about execution
 of the payloads is presented to the user in the p3s Web UI.
-Job outputs are automatically catalogued in the database and are made available
-to the users via a Web interface through a set of selectors and menus.
-The following is a summary  of the \pd-SP
-prompt processing/DQM system design features\cite{chep18}:
+Job outputs are automatically catalogued in the database by a dedicated Web service
+and are made available to the users via a Web interface through a set of selectors and menus.
+The following is a summary  of the \pd-SP prompt processing/DQM system design features\cite{chep18}:
 \begin{itemize}
 
 \item A high degree of automation and a data-driven workflow
 %: creation of various computational payloads is triggered by arrival of new data
 
-\item A complete decoupling of the DQM and the DAQ systems, which allows
+\item Complete decoupling of the DQM and the DAQ systems, which allows
 for stable and reliable operation of the latter while being able to make frequent updates to the
-DQM code and adding new types of software modules (``payloads'') when necessary
-%, as well as adjusting operating parameters of the system
+DQM code and adding features and new types of software modules (``payloads'') whenever
+necessary
 
 \item A simple pilot-based framework inspired by PanDA and Dirac \cite{panda,dirac}
 which minimizes the latency of job submission and provides a layer of abstraction
@@ -101,11 +100,9 @@ which in turn manage execution of the DQM jobs defined by the user (the ``payloa
 \item Separation of the workload management functionality  of p3s  from
 indexing and navigation of the content created by the DQM  jobs (a separate ``content service''),
 which provides a clean interface and optimal end-user experience
-% ; such separation is achieved by creating two distinct Web services
 
-\item Utilization of an indistry-standard Django Web application framework  \cite{django},
-with the applications hosted by Apache Web servers while utilzing the PostgreSQL database
-back-end
+\item Industry-standard tools and frameworks: Django\cite{django} applications
+run with the Apache HTTP server and the PostgreSQL RDBMS back-end
 
 \item Self-describing DQM data which allows automatic and consistent generation of Web pages
 by the content service for each type of DQM applications without changes to the server code.
@@ -142,16 +139,39 @@ Neutrino Platform organization \cite{platform} consisting of a few dozen
 worker nodes configured as a HTCondor cluster, and the pilots were managed
 by scripts utilizing the HTCondor batch system tools. Web and database
 services were deployed on two nodes which were part of the same cluster.
+Subsequently a decision was made to leverage the capabilities of the CERN
+Central Services which included the following:
 
-Subsequently a decision was made to migrate the system to the CERN Central
-Services i.e.\,to host the p3s server and DQM content server on the CERN OpenStack
-VMs and utilize  the central batch facility (``lxbatch'') as the compute element.
-The migration largely consisted of adapting existing scripts to the new HTCondor
+\begin{itemize}
+
+\item hosting the p3s server and DQM content server on the CERN OpenStack
+Virtual Machines
+
+\item utilization  the central batch facility (``lxbatch'') as the compute element
+
+\item relying on the EOS distributed storage to stage input and output data
+including serving the DQM content through the Web service
+
+\end{itemize}
+
+\noindent The migration included adapting existing scripts to the new HTCondor
 environment and using the Kerberized ``acrontab'' facility to orchestrate their
-periodic execution. For the p3s and DQM servers deployed in OpenStack we made
+periodic execution. The input data was staged from EOS storage to the worker
+nodes' local disk space prior to execution using the \textit{xrdcp} utility.
+
+For the p3s and DQM servers deployed in OpenStack we made
 use of the snapshot feature to simplify recovery and to scale the services as
 needed, for example by transparently increasing the number of cores in a host
 VM while keeping the software environment intact.
+
+Our experience of long-term operation within the CERN environment
+is positive. We note exceptional stability of the OpenStack VMs.
+Intermittent latency fluctuations of file transfers to worker nodes
+were attributed to periods of extremely high load on the EOS cluster
+and accounted for. The p3s dashboard was updated with
+a table of metrics for the batch system, storage space and
+file system performance to help operators assess the state of the
+system and take corrective meastures.
 
 \subsection{The Software}
 \label{sec:software}
@@ -197,11 +217,8 @@ for optimal resource management. Adding new types of jobs was facilitated by two
 
 \noindent Software updates and its provisioning to the worker nodes were simplified by making use of
 the CVMFS distribution model.
-% Over its service time t
-The system dashboard was updated with added metrics for the
-batch system, storage space and file system performance.
 
-
+\ 
 
 \begin{figure}[h]
 \centering
